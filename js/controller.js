@@ -4,29 +4,42 @@ class Controller {
     constructor(){
     }
 
-    // insertExternalMessage(text,senderId,receiverId){
-    //     model.insertMessage(text,senderId,receiverId);
-    // }
+    createEvent(title, datetime, location, description, icon) {
+        let event = new Event({
+            title: title,
+            datetime: new Date(datetime),
+            location: location,
+            description: description,
+            icon: icon
+        });
+
+        model.addEvent(event);
+    }
+
+    updateEvent(id, title, datetime, location, description, icon) {
+        model.updateEvent(id, title, new Date(datetime), location, description, icon);
+    }
 
     init(){
-        // document.querySelector("contact-list").addEventListener("change-contact", (e) => {
-        //     TODO
-        // });
-        //
-        // document.querySelector(".composer__send").onclick = (e) => {
-        //
-        // };
+        document.querySelector("event-list").addEventListener("update-event", (e) => {
+            let formData = e.detail.formData
+            this.updateEvent(e.detail.id,formData.get("title"), formData.get("datetime"), formData.get("location"), formData.get("description"), formData.get("icon"));
+        });
 
-        let form = document.getElementById("create-event-form");
-        form.addEventListener("submit", function (e) {
+        document.querySelector("event-list").addEventListener("delete-event", (e) => {
+            let confirmation = confirm("Are you sure you want to delete the event?")
+
+            if (confirmation) {
+                model.deleteEvent(e.detail)
+            }
+        });
+
+        document.getElementById("create-event-form").addEventListener("submit", (e) => {
+            console.log(e)
+            console.log(e.target.elements.namedItem("datetime").value)
             e.preventDefault();
-            let formData = new FormData(e.target)
-            let event = new Event({
-                id: '2',
-                name: formData.get('name'),
-                description: formData.get('description')
-            })
-            model.addEvent(event)
+            let formData = new FormData(e.target);
+            this.createEvent(formData.get("title"), formData.get("datetime"), formData.get("location"), formData.get("description"), formData.get("icon"));
         });
 
     }
