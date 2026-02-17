@@ -5,8 +5,7 @@ export default class Event {
     #location
     #description;
     #icon
-
-    #status // special? can be derived
+    #tags
 
     constructor({
         title,
@@ -20,7 +19,8 @@ export default class Event {
         this.#datetime = datetime;
         this.#location = location;
         this.#description = description;
-        this.#icon = icon
+        this.#icon = icon;
+        this.#tags = new Map();
     }
 
     get id() {
@@ -67,9 +67,26 @@ export default class Event {
     }
 
     get status() {
-        return this.#status
+        const currentTime = new Date()
+
+        if (this.#datetime < currentTime) {
+            return Status.Completed
+        } else {
+            return Status.Planned
+        }
     }
 
+    get tags() {
+        return this.#tags;
+    }
+
+    addTag(tag) {
+        this.#tags.set(tag.id, tag);
+    }
+
+    removeTag(tag) {
+        this.#tags.delete(tag.id);
+    }
 }
 
 class Status {

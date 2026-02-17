@@ -4,15 +4,13 @@ import {button} from "./templates.js";
 class EventItem extends HTMLElement {
 
     #event
+    #availableTags
 
-    constructor() {
+    constructor(event, availableTags) {
         super();
-    }
-
-    set event(event) {
         this.#event = event;
-        console.log(this.#event.datetime)
-        this.render();
+        this.#availableTags = availableTags;
+        console.log(availableTags)
     }
 
     connectedCallback() {
@@ -93,7 +91,71 @@ class EventItem extends HTMLElement {
             form.elements.namedItem(name).value = value;
         });
 
+       const select = document.createElement("select");
+        select.classList.add("add-tag-dropdown");
+        select.style.display = "none";
+        const chooseTag = document.createElement("option")
+        chooseTag.selected = true
+        chooseTag.disabled = true
+        chooseTag.value = ""
+        chooseTag.text = "-- choose tag --"
 
+        select.appendChild(chooseTag)
+        this.#availableTags.map(tag => {
+            const option = document.createElement("option");
+            option.value = tag.id;
+            option.text = tag.name;
+
+            select.appendChild(option);
+        })
+        select.addEventListener("change", (e) => {
+            console.log(e);
+            eventList.dispatchEvent(
+                new CustomEvent("add-tag-to-event", {
+                    detail: {
+                        id: this.#event.id,
+                        tag: select.value
+                    }
+                })
+            )
+        })
+
+        const button = document.createElement("button");
+        button.classList.add("bg-amber-500", "px-2", "py-2")
+        button.textContent = "Add Tag"
+        button.addEventListener("click", () => {
+            select.style.display = "block";
+            button.style.display = "none";
+        })
+
+        const tagList = this.querySelector(`#tags-list-${this.#event.id}`)
+        console.log(tagList)
+        this.#event.tags.values().toArray().map(tag => {
+            const pill = document.createElement("template")
+            pill.innerHTML = `
+                <span class="inline bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 rounded">
+                    ${tag.name} <button class="cursor-pointer z-10">&times;</button>
+                </span>
+            `
+
+
+            const element = pill.content
+            const deleteButton = element.querySelector("button")
+            deleteButton.addEventListener("click", (e) => {
+                eventList.dispatchEvent(
+                    new CustomEvent("delete-tag-from-event", {
+                        detail: {
+                            id: this.#event.id,
+                            tag: tag.id,
+                        }
+                    })
+                )
+            })
+
+            tagList.append(element)
+        })
+        tagList.append(button);
+        tagList.append(select);
     }
 
     template() {
@@ -102,9 +164,13 @@ class EventItem extends HTMLElement {
         return `
             <div class="border px-4 py-4 backdrop-grayscale-25">
                 <div id="event-info-${eventId}">
-                    <span><span class="text-2xl">${this.#event.title}</span> <span class="text-sm">(${eventId})</span></span>
+                    <span><span class="text-2xl">${this.#event.title} - ${this.#event.status.description}</span> <span class="text-sm">(${eventId})</span></span>
                     <h3 class="text-xl">${this.#event.location} - ${this.#event.datetime.toLocaleString(this.getLang())} (local time)</h3>
+                    
+                    <div id="tags-list-${eventId}">
+                    </div>
                     <p>${this.#event.description}</p>
+                    
                     
                     ${button(`edit-${eventId}`, "Edit Event")}
                     ${button(`delete-${eventId}`, "Delete Event")}
@@ -131,6 +197,9 @@ class EventItem extends HTMLElement {
                         ${button(`cancel-edit-${eventId}`, "Cancel")}
                     </form>   
                 </div>
+                <div>
+                  Available Tags: ${JSON.stringify(this.#availableTags)}
+                </div>
             </div>
         `
     }
@@ -142,13 +211,20 @@ customElements.define('event-item', EventItem)
 class EventList extends HTMLElement {
 
     #events
+    #availableTags
+
     constructor() {
         super();
         this.#events = [];
+        this.#availableTags = []
         model.addEventListener("event-list-changed", (event) => {
             this.#events = event.detail;
             this.render();
         });
+        model.addEventListener("tag-list-changed", (event) => {
+            this.#availableTags = event.detail
+            this.render();
+        })
     }
 
     connectedCallback() {
@@ -160,7 +236,7 @@ class EventList extends HTMLElement {
         this.innerHTML = "";
         this.appendChild(this.header().content); // no need to clone, only used once
         this.#events.map(event => {
-            this.appendChild(this.eventItem(event))
+            this.appendChild(new EventItem(event, this.#availableTags))
         });
     }
 
@@ -171,12 +247,6 @@ class EventList extends HTMLElement {
         `;
 
         return header;
-    }
-
-    eventItem(event) {
-        let eventItem = document.createElement("event-item");
-        eventItem.event = event;
-        return eventItem
     }
 
 }

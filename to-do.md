@@ -1,9 +1,9 @@
 # To-do
 
 ## Event Management
-- [ ] Events can be created, edited and deleted
+- [x] Events can be created, edited and deleted
   - [x] create events
-  - [ ] edit events
+  - [x] edit events
   - [x] delete events
 - [x] Every event has: Title, Date & Time, Place, Description, Status (Planned/Completed) and optional logo/symbol
 
@@ -13,12 +13,14 @@
 - [ ] When a participant is assigned to an event, he receives an invitation
 
 ## Tagging
-- [ ] Every event can have 0..n tags
+- [x] Adding tags to event
+- [x] Removing tags from event
+- [x] Every event can have 0..n tags
 
 ## Filter & Status
-- [ ] Filter by Status
+- [x] Filter by Status
 - [ ] Filter by Participant
-- [ ] Filter by Tags
+- [x] Filter by Tags
 
 [//]: # (## Participant Management &#40;optional&#41;)
 

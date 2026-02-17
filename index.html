@@ -6,8 +6,8 @@
     <link href="./styles/output.css" rel="stylesheet">
 </head>
 <body>
-    <event-list id="event-list">
-    </event-list>
+    <filter-bar id="filter-bar"></filter-bar>
+    <event-list id="event-list"></event-list>
 
     <div class="border px-4 py-4">
     <h2 class="text-2xl underline">Event Management:</h2>
@@ -31,7 +31,7 @@
     </form>
     </div>
 
-
+    <tag-list id="tag-list"></tag-list>
     <div class="scroll-m-0 scrollbar" style="overflow: auto; text-wrap: nowrap">
         <button class="inline bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline">
             Dance
@@ -145,6 +145,8 @@
     </div>
 
     <script type="module" src="./js/views/event-view.js"></script>
+    <script type="module" src="./js/views/filter-bar.js"></script>
+    <script type="module" src="./js/views/tag-view.js"></script>
     <script type="module" src="js/main.js"></script>
 </body>
 </html>
