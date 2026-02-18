@@ -46,12 +46,26 @@ class Controller {
             model.deleteTagFromEvent(e.detail.id, e.detail.tag)
         });
 
+        document.querySelector("event-list").addEventListener("add-participant-to-event", (e) => {
+            console.log(`Adding participant-to event: ${JSON.stringify(e.detail)}`)
+            model.addParticipantToEvent(e.detail.id, e.detail.email)
+        })
+
+        document.querySelector("event-list").addEventListener("remove-participant-from-event", (e) => {
+            console.log(`Deleting participant from event: ${JSON.stringify(e.detail)}`)
+            model.removeParticipantFromEvent(e.detail.id, e.detail.email)
+        })
+
         document.querySelector("filter-bar").addEventListener("update-status-filter", (e) => {
             model.updateStatusFilters(e.detail);
         });
 
         document.querySelector("filter-bar").addEventListener("update-tag-filter", (e) => {
             model.updateTagFilters(e.detail);
+        });
+
+        document.querySelector("filter-bar").addEventListener("update-participant-filter", (e) => {
+            model.updateParticipantFilters(e.detail);
         });
 
         document.getElementById("create-event-form").addEventListener("submit", (e) => {
@@ -73,6 +87,18 @@ class Controller {
             }
         })
 
+        document.getElementById("participant-list").addEventListener("add-participant", (e) => {
+            console.log(`Adding participant ${e.detail}`)
+            model.addParticipant(e.detail.name, e.detail.email.toLowerCase(), e.detail.avatar)
+        })
+
+        document.getElementById("participant-list").addEventListener("delete-participant", (e) => {
+            let confirmation = confirm("Are you sure you want to delete the participant? This will also delete them from all events.")
+
+            if (confirmation) {
+                model.deleteParticipant(e.detail)
+            }
+        })
     }
 }
 

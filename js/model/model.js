@@ -1,5 +1,6 @@
 import Filters from "./filters.js";
 import Tag from "./tag.js";
+import Participant from "./participant.js";
 
 class EventBuddyModel extends EventTarget {
 
@@ -71,6 +72,21 @@ class EventBuddyModel extends EventTarget {
 
                     return true;
                 })
+                .filter(event => {
+                    const selectedParticipantEmails = this.#filters.getFilterValues("participant");
+                    console.log(selectedParticipantEmails);
+
+                    if(selectedParticipantEmails.length > 0) {
+                        const eventEmails = event.participants.map(participant => participant.email)
+                        console.log(eventEmails);
+
+                        const intersection = eventEmails.filter(tag => selectedParticipantEmails.includes(tag))
+
+                        return intersection.length > 0;
+                    }
+
+                    return true;
+                })
 
         this.dispatchEvent(
             new CustomEvent("event-list-changed", {
@@ -92,6 +108,76 @@ class EventBuddyModel extends EventTarget {
         this.sendUpdatedEvent();
     }
 
+    updateParticipantFilters({selectedOptions}) {
+        console.log(`Updating participant filters with ${JSON.stringify(selectedOptions)} selectedOptions`);
+        this.#filters.setFilterValues("participant", selectedOptions || []);
+        this.sendUpdatedEvent();
+    }
+
+    // Participant
+    addParticipant(
+        name,
+        email,
+        avatar
+    ) {
+        if (this.participantAlreadyExists(email)) {
+            console.log(`Participant with email ${email} already exists`);
+            return;
+        }
+
+        const participant = new Participant(name, email, avatar)
+        console.log(`Adding participant with email ${email}`);
+
+        this.#participants.set(participant.email, participant)
+        this.dispatchEvent(
+            new CustomEvent("participants-changed", {
+                detail: this.#participants.values().toArray()
+            })
+        )
+    }
+
+    participantAlreadyExists(email) {
+        return this.#participants.keys().toArray().includes(email)
+    }
+
+    addParticipantToEvent(eventId, email) {
+        const participant = this.#participants.get(email)
+        const event = this.#events.get(eventId)
+
+        if (event && participant) {
+            event.addParticipant(participant)
+            this.sendUpdatedEvent();
+        }
+    }
+
+    removeParticipantFromEvent(eventId, email) {
+        const participant = this.#participants.get(email)
+        const event = this.#events.get(eventId)
+
+        if (event && participant) {
+            event.removeParticipant(participant)
+            this.sendUpdatedEvent();
+        }
+    }
+
+    deleteParticipant(email) {
+        console.log(`Deleting participant with email ${email}`);
+
+        const participant = this.#participants.get(email)
+        this.#participants.delete(email)
+
+        this.#events.values().toArray().map(event => {
+            event.removeParticipant(participant)
+        })
+
+        this.dispatchEvent(
+            new CustomEvent("participants-changed", {
+                detail: this.#participants.values().toArray()
+            })
+        )
+        this.sendUpdatedEvent()
+    }
+
     // Tags
     addTag(tagName) {
         if (this.tagAlreadyExists(tagName)) {
@@ -110,7 +196,7 @@ class EventBuddyModel extends EventTarget {
     }
 
     tagAlreadyExists(tagName) {
-        return this.#tags.values().toArray().some(tag => tag.name === tagName)
+        return this.#tags.keys().toArray().includes(tagName)
     }
 
     addTagToEvent(eventId, tagId) {

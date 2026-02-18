@@ -5,12 +5,13 @@ class EventItem extends HTMLElement {
 
     #event
     #availableTags
+    #availableParticipants
 
-    constructor(event, availableTags) {
+    constructor(event, availableTags, availableParticipants) {
         super();
         this.#event = event;
         this.#availableTags = availableTags;
-        console.log(availableTags)
+        this.#availableParticipants = availableParticipants;
     }
 
     connectedCallback() {
@@ -156,6 +157,65 @@ class EventItem extends HTMLElement {
         })
         tagList.append(button);
         tagList.append(select);
+
+
+        const participantSelect = document.createElement("select");
+        participantSelect.classList.add("add-participant-dropdown");
+        const chooseParticipant = document.createElement("option")
+        chooseParticipant.selected = true
+        chooseParticipant.disabled = true
+        chooseParticipant.value = ""
+        chooseParticipant.text = "-- choose participant --"
+
+        participantSelect.appendChild(chooseParticipant)
+        this.#availableParticipants.map(participant => {
+            const option = document.createElement("option");
+            option.value = participant.email;
+            option.text = `${participant.name} (${participant.email})`;
+
+            participantSelect.appendChild(option);
+        })
+
+        const addParticipantButton = document.createElement("button");
+        addParticipantButton.classList.add("bg-blue-500", "hover:bg-blue-700", "text-white", "font-bold", "py-2", "px-4", "rounded", "focus:outline-none", "focus:shadow-outline");
+        addParticipantButton.textContent = "Add Participant";
+        addParticipantButton.addEventListener("click", (e) => {
+            console.log(e);
+            eventList.dispatchEvent(
+                new CustomEvent("add-participant-to-event", {
+                    detail: {
+                        id: this.#event.id,
+                        email: participantSelect.value
+                    }
+                })
+            )
+        })
+
+        const participantList = this.querySelector(`.participant-list`)
+        console.log(participantList)
+        this.#event.participants.map(participant => {
+            const span = document.createElement("span");
+            span.innerHTML = `
+                ${participant.name} (${participant.email}) <button class="font-bold cursor-pointer z-10">&times;</button>
+            `
+
+            participantList.append(span)
+
+            const deleteButton = span.querySelector("button");
+            deleteButton.addEventListener("click", (e) => {
+                eventList.dispatchEvent(
+                    new CustomEvent("remove-participant-from-event", {
+                        detail: {
+                            id: this.#event.id,
+                            email: participant.email,
+                        }
+                    })
+                )
+            })
+            participantList.append(document.createElement("br"))
+        })
+        participantList.append(participantSelect)
+        participantList.append(addParticipantButton)
     }
 
     template() {
@@ -171,7 +231,11 @@ class EventItem extends HTMLElement {
                     </div>
                     <p>${this.#event.description}</p>
                     
+                    <h3>Participants</h3><hr class="py-2"/>
+                    <div class="participant-list">
                     
+                    </div>
+                    <hr class="py-2"/>
                     ${button(`edit-${eventId}`, "Edit Event")}
                     ${button(`delete-${eventId}`, "Delete Event")}
                 </div>
@@ -212,17 +276,23 @@ class EventList extends HTMLElement {
 
     #events
     #availableTags
+    #availableParticipants
 
     constructor() {
         super();
         this.#events = [];
         this.#availableTags = []
+        this.#availableParticipants = []
         model.addEventListener("event-list-changed", (event) => {
             this.#events = event.detail;
             this.render();
         });
         model.addEventListener("tag-list-changed", (event) => {
             this.#availableTags = event.detail
+            this.render();
+        })
+        model.addEventListener("participants-changed", (event) => {
+            this.#availableParticipants = event.detail
             this.render();
         })
     }
@@ -233,10 +303,12 @@ class EventList extends HTMLElement {
 
     render() {
         console.log(`Rerendering events: ${this.#events}`)
+        console.log(this.#availableTags)
+        console.log(this.#availableParticipants)
         this.innerHTML = "";
         this.appendChild(this.header().content); // no need to clone, only used once
         this.#events.map(event => {
-            this.appendChild(new EventItem(event, this.#availableTags))
+            this.appendChild(new EventItem(event, this.#availableTags, this.#availableParticipants))
         });
     }
 

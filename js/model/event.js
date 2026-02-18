@@ -5,7 +5,9 @@ export default class Event {
     #location
     #description;
     #icon
+
     #tags
+    #participants
 
     constructor({
         title,
@@ -20,7 +22,9 @@ export default class Event {
         this.#location = location;
         this.#description = description;
         this.#icon = icon;
+
         this.#tags = new Map();
+        this.#participants = new Map();
     }
 
     get id() {
@@ -86,6 +90,18 @@ export default class Event {
 
     removeTag(tag) {
         this.#tags.delete(tag.id);
+    }
+
+    get participants() {
+        return this.#participants.values().toArray();
+    }
+
+    addParticipant(participant) {
+        this.#participants.set(participant.email, participant);
+    }
+
+    removeParticipant(participant) {
+        this.#participants.delete(participant.email);
     }
 }
 

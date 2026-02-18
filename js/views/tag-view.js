@@ -11,7 +11,6 @@ class TagItem extends HTMLElement {
 
     set tag(tag) {
         this.#tag = tag;
-        this.render();
     }
 
     connectedCallback() {

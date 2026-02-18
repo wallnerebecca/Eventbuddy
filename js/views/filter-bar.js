@@ -10,6 +10,9 @@ class FilterBar extends HTMLElement {
         model.addEventListener("tag-list-changed", e => {
             this.updateTagFilter(e.detail)
         })
+        model.addEventListener("participants-changed", e => {
+            this.updateParticipantFilter(e.detail)
+        })
         this.render();
     }
 
@@ -41,10 +44,50 @@ class FilterBar extends HTMLElement {
                 })
             );
         }
+
+        const participantFilter = this.querySelector("#participant");
+        participantFilter.onchange = (e) => {
+            const selectedOptions = Array.from(participantFilter.selectedOptions).map((option) => option.value)
+            console.log(Array.from(participantFilter.selectedOptions).map((option) => option.value));
+            this.dispatchEvent(
+                new CustomEvent("update-participant-filter", {
+                    detail: {
+                        selectedOptions: selectedOptions,
+                    }
+                })
+            )
+        }
+
+        const resetFilterButton = this.querySelector("button");
+        resetFilterButton.addEventListener("click", (e) => {
+            this.dispatchEvent(
+                new CustomEvent("update-participant-filter", {
+                    detail: {
+                        selectedOptions: [],
+                    }
+                })
+            )
+            this.dispatchEvent(
+                new CustomEvent("update-tag-filter", {
+                    detail: {
+                        selectedOptions: [],
+                    }
+                })
+            )
+            this.dispatchEvent(
+                new CustomEvent("update-status-filter", {
+                    detail: {
+                        selectedOptions: [],
+                    }
+                })
+            );
+            this.render()
+        })
     }
 
     updateTagFilter(tags) {
         let select = this.querySelector("#tag")
+        select.value = "";
         select.innerHTML = "";
 
         let sortedTags = tags.sort((a, b) => a.name <  b.name ? -1 : (a.name > b.name) ? 1 : 0);
@@ -55,8 +98,38 @@ class FilterBar extends HTMLElement {
 
             select.appendChild(option)
         });
+
+        this.dispatchEvent(
+            new CustomEvent("update-tag-filter", {
+                detail: {
+                    selectedOptions: select.selectedOptions,
+                }
+            })
+        )
     }
 
+    updateParticipantFilter(participants) {
+        let select = this.querySelector("#participant");
+        select.value = "";
+        select.innerHTML = "";
+
+        let sortedParticipants = participants.sort((a, b) => a.name <  b.name ? -1 : (a.name > b.name) ? 1 : 0);
+        sortedParticipants.map((participant) => {
+            let option = document.createElement("option");
+            option.value = participant.email;
+            option.text = `${participant.name} (${participant.email})`;
+            select.appendChild(option)
+        })
+
+        this.dispatchEvent(
+            new CustomEvent("update-participant-filter", {
+                detail: {
+                    selectedOptions: select.selectedOptions,
+                }
+            })
+        )
+
+    }
     template() {
         return `
             <label for="status">Status</label>
@@ -72,6 +145,8 @@ class FilterBar extends HTMLElement {
             <label for="tags">Tags</label>
             <select id="tag" name="tag" size="1" multiple>
             </select>
+            
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Reset filters</button>
         `;
     }
 }

@@ -1,4 +1,4 @@
-class Participant {
+export default class Participant {
     #name
     #email
     #avatar
