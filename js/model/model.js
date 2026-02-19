@@ -1,6 +1,8 @@
 import Filters from "./filters.js";
 import Tag from "./tag.js";
 import Participant from "./participant.js";
+import User from "./user.js";
+import Event from "./event.js";
 
 class EventBuddyModel extends EventTarget {
 
@@ -8,6 +10,9 @@ class EventBuddyModel extends EventTarget {
     #participants
     #filters
     #tags
+    #users
+
+    #activeUser
 
     constructor() {
         super();
@@ -15,13 +20,38 @@ class EventBuddyModel extends EventTarget {
         this.#filters = new Filters();
         this.#participants = new Map();
         this.#tags = new Map();
+        this.#users = []
+        this.#activeUser = undefined
     }
 
+    addUser({username, email}) {
+        this.#users.push(new User(username, email));
+        this.dispatchEvent(
+            new CustomEvent("users-updated", {
+                detail: this.#users
+            })
+        )
+    }
 
-    addEvent(event) {
-       console.log(`Adding event ${event.id}: ${event.title}`);
-       this.#events.set(event.id, event);
-       this.sendUpdatedEvent();
+    setActiveUser(user) {
+        this.#activeUser = user;
+    }
+
+    addEvent(title,
+             datetime,
+             location,
+             description,
+             icon) {
+        const event = new Event(title,
+            datetime,
+            location,
+            description,
+            icon,
+            this.#activeUser
+        )
+        console.log(`Adding event ${event.id}: ${event.title}`);
+        this.#events.set(event.id, event);
+        this.sendUpdatedEvent();
     }
 
     updateEvent(id,

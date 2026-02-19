@@ -1,21 +1,17 @@
 import {model} from "./model/model.js";
-import Event from "./model/event.js";
-import Tag from "./model/tag.js";
 
 class Controller {
     constructor(){
     }
 
     createEvent(title, datetime, location, description, icon) {
-        let event = new Event({
-            title: title,
-            datetime: new Date(datetime),
-            location: location,
-            description: description,
-            icon: icon
-        });
-
-        model.addEvent(event);
+        model.addEvent(
+            title,
+            new Date(datetime),
+            location,
+            description,
+            icon
+        );
     }
 
     updateEvent(id, title, datetime, location, description, icon) {
@@ -23,6 +19,10 @@ class Controller {
     }
 
     init(){
+        fetch('../json/users.json')
+            .then(response => response.json())
+            .then(json => json.forEach(user => model.addUser(user)));
+
         document.querySelector("event-list").addEventListener("update-event", (e) => {
             let formData = e.detail.formData
             this.updateEvent(e.detail.id,formData.get("title"), formData.get("datetime"), formData.get("location"), formData.get("description"), formData.get("icon"));
@@ -99,6 +99,10 @@ class Controller {
                 model.deleteParticipant(e.detail)
             }
         })
+
+        document.querySelector("user-view").addEventListener("user-selected", (e) => {
+            model.setActiveUser(e.detail.user)
+        });
     }
 }
 

@@ -22,13 +22,13 @@
 - [ ] Filter by Participant
 - [x] Filter by Tags
 
-[//]: # (## Participant Management &#40;optional&#41;)
+## Participant Management (optional)
 
-[//]: # (- [ ] Participants can be created, edited and deleted independently from events)
+- [x] Participants can be created, edited and deleted independently from events (not edit)
 
-[//]: # (- [ ] A participant has name, e-mail and optional avatar or abbreviation)
+- [x] A participant has name, e-mail and optional avatar or abbreviation
 
-[//]: # (- [ ] Users must register/log-in before being able to use the app)
+- [ ] Users must register/log-in before being able to use the app
 
 [//]: # ()
 [//]: # (## RSVP System &#40;optional&#41;)

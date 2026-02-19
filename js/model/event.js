@@ -6,22 +6,27 @@ export default class Event {
     #description;
     #icon
 
+    #createdBy
+
     #tags
     #participants
 
-    constructor({
+    constructor(
         title,
         datetime,
         location,
         description,
-        icon
-    }) {
+        icon,
+        createdBy
+    ) {
         this.#id = crypto.randomUUID();
         this.#title = title;
         this.#datetime = datetime;
         this.#location = location;
         this.#description = description;
         this.#icon = icon;
+
+        this.#createdBy = createdBy;
 
         this.#tags = new Map();
         this.#participants = new Map();
@@ -64,6 +69,10 @@ export default class Event {
     }
     get description() {
         return this.#description;
+    }
+
+    get createdBy() {
+        return this.#createdBy;
     }
 
     set description(description) {

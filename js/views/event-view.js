@@ -218,6 +218,14 @@ class EventItem extends HTMLElement {
         participantList.append(addParticipantButton)
     }
 
+    getCreatedBy() {
+        if (this.#event.createdBy) {
+            return `<h3>Created by: ${this.#event.createdBy.name} (${this.#event.createdBy.email})</h3>`
+        } else {
+            return `<h3>Created by: Anonymous</h3>`
+        }
+    }
+
     template() {
         const eventId = this.#event.id;
 
@@ -226,7 +234,7 @@ class EventItem extends HTMLElement {
                 <div id="event-info-${eventId}">
                     <span><span class="text-2xl">${this.#event.title} - ${this.#event.status.description}</span> <span class="text-sm">(${eventId})</span></span>
                     <h3 class="text-xl">${this.#event.location} - ${this.#event.datetime.toLocaleString(this.getLang())} (local time)</h3>
-                    
+                    ${this.getCreatedBy()}
                     <div id="tags-list-${eventId}">
                     </div>
                     <p>${this.#event.description}</p>
