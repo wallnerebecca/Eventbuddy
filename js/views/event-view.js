@@ -141,7 +141,7 @@ class EventItem extends HTMLElement {
             const deleteButton = element.querySelector("button")
             deleteButton.addEventListener("click", (e) => {
                 eventList.dispatchEvent(
-                    new CustomEvent("delete-tag-from-event", {
+                    new CustomEvent("remove-tag-from-event", {
                         detail: {
                             id: this.#event.id,
                             tag: tag.id,

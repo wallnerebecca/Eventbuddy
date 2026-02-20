@@ -35,7 +35,7 @@ class FilterBar extends HTMLElement {
         tagFilter.onchange = (e) => {
             const selectedOptions = Array.from(tagFilter.selectedOptions).map((option) => option.value)
             this.dispatchEvent(
-                new CustomEvent("update-tag-filter", {
+                new CustomEvent("update-tags-filter", {
                     detail: {
                         selectedOptions: selectedOptions,
                     }
@@ -47,7 +47,7 @@ class FilterBar extends HTMLElement {
         participantFilter.onchange = (e) => {
             const selectedOptions = Array.from(participantFilter.selectedOptions).map((option) => option.value)
             this.dispatchEvent(
-                new CustomEvent("update-participant-filter", {
+                new CustomEvent("update-participants-filter", {
                     detail: {
                         selectedOptions: selectedOptions,
                     }
@@ -58,14 +58,14 @@ class FilterBar extends HTMLElement {
         const resetFilterButton = this.querySelector("button");
         resetFilterButton.addEventListener("click", (e) => {
             this.dispatchEvent(
-                new CustomEvent("update-participant-filter", {
+                new CustomEvent("update-participants-filter", {
                     detail: {
                         selectedOptions: [],
                     }
                 })
             )
             this.dispatchEvent(
-                new CustomEvent("update-tag-filter", {
+                new CustomEvent("update-tags-filter", {
                     detail: {
                         selectedOptions: [],
                     }
@@ -97,7 +97,7 @@ class FilterBar extends HTMLElement {
         });
 
         this.dispatchEvent(
-            new CustomEvent("update-tag-filter", {
+            new CustomEvent("update-tags-filter", {
                 detail: {
                     selectedOptions: select.selectedOptions,
                 }
@@ -119,7 +119,7 @@ class FilterBar extends HTMLElement {
         })
 
         this.dispatchEvent(
-            new CustomEvent("update-participant-filter", {
+            new CustomEvent("update-participants-filter", {
                 detail: {
                     selectedOptions: select.selectedOptions,
                 }

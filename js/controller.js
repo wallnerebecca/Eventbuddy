@@ -14,13 +14,13 @@ class Controller {
         document.querySelector("event-list").addEventListener("update-event", this.handleUpdateEvent);
         document.querySelector("event-list").addEventListener("delete-event", this.handleDeleteEvent);
         document.querySelector("event-list").addEventListener("add-tag-to-event", this.handleAddTagToEvent);
-        document.querySelector("event-list").addEventListener("delete-tag-from-event", this.handleDeleteTagFromEvent);
+        document.querySelector("event-list").addEventListener("remove-tag-from-event", this.handleRemoveTagFromEvent);
         document.querySelector("event-list").addEventListener("add-participant-to-event", this.handleAddParticipantToEvent)
         document.querySelector("event-list").addEventListener("remove-participant-from-event", this.handleRemoveParticipantFromEvent)
 
-        document.querySelector("filter-bar").addEventListener("update-status-filter", this.handleStatusFilterUpdate);
-        document.querySelector("filter-bar").addEventListener("update-tag-filter", this.handleTagFilterUpdate);
-        document.querySelector("filter-bar").addEventListener("update-participant-filter", this.handleParticipantFilterUpdate);
+        document.querySelector("filter-bar").addEventListener("update-status-filter", this.handleUpdateStatusFilter);
+        document.querySelector("filter-bar").addEventListener("update-tags-filter", this.handleUpdateTagsFilter);
+        document.querySelector("filter-bar").addEventListener("update-participants-filter", this.handleUpdateParticipantsFilter);
 
         document.querySelector("tag-list").addEventListener("add-tag", this.handleAddTag)
         document.querySelector("tag-list").addEventListener("delete-tag", this.handleDeleteTag)
@@ -56,7 +56,7 @@ class Controller {
         model.addTagToEvent(e.detail.id, e.detail.tag)
     }
 
-    handleDeleteTagFromEvent = (e) => {
+    handleRemoveTagFromEvent = (e) => {
         model.deleteTagFromEvent(e.detail.id, e.detail.tag)
     }
 
@@ -69,15 +69,15 @@ class Controller {
     }
 
     /* FILTER BAR */
-    handleStatusFilterUpdate = (e) => {
+    handleUpdateStatusFilter = (e) => {
         model.updateStatusFilters(e.detail);
     }
 
-    handleTagFilterUpdate = (e) => {
+    handleUpdateTagsFilter = (e) => {
         model.updateTagFilters(e.detail);
     }
 
-    handleParticipantFilterUpdate = (e) => {
+    handleUpdateParticipantsFilter = (e) => {
         model.updateParticipantFilters(e.detail);
     }
 
