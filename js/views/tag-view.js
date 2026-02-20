@@ -20,10 +20,9 @@ class TagItem extends HTMLElement {
     render() {
         this.innerHTML = this.template();
 
-        console.log(this.#tag);
-        let tagList = document.querySelector("tag-list");
+        const tagList = document.querySelector("tag-list");
 
-        let deleteButton = this.querySelector(`button`)
+        const deleteButton = this.querySelector(`button`)
         deleteButton.addEventListener("click", ()=> {
             tagList.dispatchEvent(
                 new CustomEvent("delete-tag", {
@@ -63,9 +62,8 @@ class TagList extends HTMLElement {
     }
 
     render() {
-        console.log(`Rerendering Tags: ${this.#tags}`)
         this.innerHTML = "";
-        let container = document.createElement("div")
+        const container = document.createElement("div")
         container.classList.add("border", "px-4", "py-4")
 
         container.appendChild(
@@ -79,7 +77,7 @@ class TagList extends HTMLElement {
 
         container.querySelector("#add-tag-form").addEventListener("submit", e => {
             e.preventDefault();
-            let formData = new FormData(e.target);
+            const formData = new FormData(e.target);
             this.dispatchEvent(new CustomEvent("add-tag", {
                 detail: formData.get("name")
             }))
@@ -88,7 +86,7 @@ class TagList extends HTMLElement {
     }
 
     header() {
-        let header = document.createElement("template");
+        const header = document.createElement("template");
         header.innerHTML = `
             <h1 class="text-2xl underline">Tag Management:</h1>
             <h2 class="text-xl font-bold py-2">Tags:</h2>
@@ -98,7 +96,7 @@ class TagList extends HTMLElement {
     }
 
     createTagForm() {
-        let tagForm = document.createElement("template");
+        const tagForm = document.createElement("template");
         tagForm.innerHTML = `
             <h2 class="text-xl font-bold py-2">Add Tag:</h2>
             <form id="add-tag-form" action="#">
@@ -113,7 +111,7 @@ class TagList extends HTMLElement {
     }
 
     tagItem(tag) {
-        let tagItem = document.createElement("tag-item");
+        const tagItem = document.createElement("tag-item");
         tagItem.tag = tag;
         return tagItem
     }

@@ -28,7 +28,7 @@ class UserView extends HTMLElement {
 
         userSelect.appendChild(empty)
         this.#sortedUsers.map((user) => {
-            let option = document.createElement("option");
+            const option = document.createElement("option");
             option.value = user.email;
             option.text = `${user.name} (${user.email})`;
             userSelect.appendChild(option)
@@ -36,7 +36,6 @@ class UserView extends HTMLElement {
 
         userSelect.onchange = (e) => {
             const selectedUser = this.#sortedUsers.find(user => user.email === userSelect.value)
-            console.log(selectedUser);
             this.dispatchEvent(
                 new CustomEvent("user-selected", {
                     detail: {

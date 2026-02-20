@@ -61,7 +61,7 @@ class EventBuddyModel extends EventTarget {
                 description,
                 icon) {
         console.log(`Updating event ${id}`);
-        let event = this.#events.get(id);
+        const event = this.#events.get(id);
         event.title = title;
         event.datetime = datetime;
         event.location = location;
@@ -78,7 +78,7 @@ class EventBuddyModel extends EventTarget {
 
     sendUpdatedEvent() {
 
-        let filteredEvents =
+        const filteredEvents =
             this.#events
                 .values()
                 .toArray()

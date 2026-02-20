@@ -35,9 +35,9 @@ class EventItem extends HTMLElement {
 
     render() {
         this.innerHTML = this.template();
-        let eventList = document.querySelector("event-list");
+        const eventList = document.querySelector("event-list");
 
-        let deleteButton = this.querySelector(`#delete-${this.#event.id}`)
+        const deleteButton = this.querySelector(`#delete-${this.#event.id}`)
         deleteButton.addEventListener("click", ()=> {
            eventList.dispatchEvent(
                 new CustomEvent("delete-event", {
@@ -46,23 +46,23 @@ class EventItem extends HTMLElement {
             )
         });
 
-        let eventInfo = this.querySelector(`#event-info-${this.#event.id}`)
-        let editEvent = this.querySelector(`#edit-event-${this.#event.id}`)
+        const eventInfo = this.querySelector(`#event-info-${this.#event.id}`)
+        const editEvent = this.querySelector(`#edit-event-${this.#event.id}`)
         editEvent.hidden = true;
 
-        let editButton = this.querySelector(`#edit-${this.#event.id}`)
+        const editButton = this.querySelector(`#edit-${this.#event.id}`)
         editButton.addEventListener("click", ()=> {
             eventInfo.hidden = true;
             editEvent.hidden = false;
         });
 
-        let cancelEditButton = this.querySelector(`#cancel-edit-${this.#event.id}`)
+        const cancelEditButton = this.querySelector(`#cancel-edit-${this.#event.id}`)
         cancelEditButton.addEventListener("click", ()=> {
             eventInfo.hidden = false;
             editEvent.hidden = true;
         });
 
-        let form = this.querySelector(`#edit-event-form-${this.#event.id}`)
+        const form = this.querySelector(`#edit-event-form-${this.#event.id}`)
         form.addEventListener("submit", (e) => {
             e.preventDefault();
             eventList.dispatchEvent(
@@ -80,7 +80,7 @@ class EventItem extends HTMLElement {
             return new Date(newDate.getTime() - newDate.getTimezoneOffset() * 60000).toISOString().slice(0, -1);
         };
 
-        let prefilledValues = {
+        const prefilledValues = {
             title: this.#event.title,
             datetime: getDateString(this.#event.datetime),
             location: this.#event.location,
@@ -110,7 +110,6 @@ class EventItem extends HTMLElement {
             select.appendChild(option);
         })
         select.addEventListener("change", (e) => {
-            console.log(e);
             eventList.dispatchEvent(
                 new CustomEvent("add-tag-to-event", {
                     detail: {
@@ -130,7 +129,6 @@ class EventItem extends HTMLElement {
         })
 
         const tagList = this.querySelector(`#tags-list-${this.#event.id}`)
-        console.log(tagList)
         this.#event.tags.values().toArray().map(tag => {
             const pill = document.createElement("template")
             pill.innerHTML = `
@@ -180,7 +178,6 @@ class EventItem extends HTMLElement {
         addParticipantButton.classList.add("bg-blue-500", "hover:bg-blue-700", "text-white", "font-bold", "py-2", "px-4", "rounded", "focus:outline-none", "focus:shadow-outline");
         addParticipantButton.textContent = "Add Participant";
         addParticipantButton.addEventListener("click", (e) => {
-            console.log(e);
             eventList.dispatchEvent(
                 new CustomEvent("add-participant-to-event", {
                     detail: {
@@ -192,7 +189,6 @@ class EventItem extends HTMLElement {
         })
 
         const participantList = this.querySelector(`.participant-list`)
-        console.log(participantList)
         this.#event.participants.map(participant => {
             const span = document.createElement("span");
             span.innerHTML = `
@@ -313,9 +309,6 @@ class EventList extends HTMLElement {
     }
 
     render() {
-        console.log(`Rerendering events: ${this.#events}`)
-        console.log(this.#availableTags)
-        console.log(this.#availableParticipants)
         this.innerHTML = "";
         this.appendChild(this.header().content); // no need to clone, only used once
         this.#events.map(event => {
@@ -324,7 +317,7 @@ class EventList extends HTMLElement {
     }
 
     header() {
-        let header = document.createElement("template");
+        const header = document.createElement("template");
         header.innerHTML = `
             <h1 class="text-3xl text-amber-600">Event List:</h1>
         `;

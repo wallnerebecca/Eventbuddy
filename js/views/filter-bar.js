@@ -22,7 +22,6 @@ class FilterBar extends HTMLElement {
         const statusFilter = this.querySelector("#status")
         statusFilter.onchange = (e) => {
             const selectedOptions = Array.from(statusFilter.selectedOptions).map((option) => option.value)
-            console.log(Array.from(statusFilter.selectedOptions).map((option) => option.value));
             this.dispatchEvent(
                 new CustomEvent("update-status-filter", {
                     detail: {
@@ -35,7 +34,6 @@ class FilterBar extends HTMLElement {
         const tagFilter = this.querySelector("#tag");
         tagFilter.onchange = (e) => {
             const selectedOptions = Array.from(tagFilter.selectedOptions).map((option) => option.value)
-            console.log(Array.from(tagFilter.selectedOptions).map((option) => option.value));
             this.dispatchEvent(
                 new CustomEvent("update-tag-filter", {
                     detail: {
@@ -48,7 +46,6 @@ class FilterBar extends HTMLElement {
         const participantFilter = this.querySelector("#participant");
         participantFilter.onchange = (e) => {
             const selectedOptions = Array.from(participantFilter.selectedOptions).map((option) => option.value)
-            console.log(Array.from(participantFilter.selectedOptions).map((option) => option.value));
             this.dispatchEvent(
                 new CustomEvent("update-participant-filter", {
                     detail: {
@@ -86,13 +83,13 @@ class FilterBar extends HTMLElement {
     }
 
     updateTagFilter(tags) {
-        let select = this.querySelector("#tag")
+        const select = this.querySelector("#tag")
         select.value = "";
         select.innerHTML = "";
 
-        let sortedTags = tags.sort((a, b) => a.name <  b.name ? -1 : (a.name > b.name) ? 1 : 0);
+        const sortedTags = tags.sort((a, b) => a.name <  b.name ? -1 : (a.name > b.name) ? 1 : 0);
         sortedTags.map((tag) => {
-            let option = document.createElement("option");
+            const option = document.createElement("option");
             option.value = tag.id;
             option.text = tag.name;
 
@@ -109,13 +106,13 @@ class FilterBar extends HTMLElement {
     }
 
     updateParticipantFilter(participants) {
-        let select = this.querySelector("#participant");
+        const select = this.querySelector("#participant");
         select.value = "";
         select.innerHTML = "";
 
-        let sortedParticipants = participants.sort((a, b) => a.name <  b.name ? -1 : (a.name > b.name) ? 1 : 0);
+        const sortedParticipants = participants.sort((a, b) => a.name <  b.name ? -1 : (a.name > b.name) ? 1 : 0);
         sortedParticipants.map((participant) => {
-            let option = document.createElement("option");
+            const option = document.createElement("option");
             option.value = participant.email;
             option.text = `${participant.name} (${participant.email})`;
             select.appendChild(option)

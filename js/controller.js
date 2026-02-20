@@ -36,16 +36,16 @@ class Controller {
     /* EVENT MANAGEMENT */
     handleAddEvent = (e) => {
         e.preventDefault();
-        let formData = new FormData(e.target);
+        const formData = new FormData(e.target);
         model.addEvent(formData.get("title"), new Date(formData.get("datetime")), formData.get("location"), formData.get("description"), formData.get("icon"));
     }
     handleUpdateEvent = (e) => {
-        let formData = e.detail.formData
+        const formData = e.detail.formData
         model.updateEvent(e.detail.id, formData.get("title"), new Date(formData.get("datetime")), formData.get("location"), formData.get("description"), formData.get("icon"));
     }
 
     handleDeleteEvent = (e) => {
-        let confirmation = confirm("Are you sure you want to delete the event?")
+        const confirmation = confirm("Are you sure you want to delete the event?")
 
         if (confirmation) {
             model.deleteEvent(e.detail)
@@ -57,7 +57,6 @@ class Controller {
     }
 
     handleDeleteTagFromEvent = (e) => {
-        console.log("Deleting tag from event:")
         model.deleteTagFromEvent(e.detail.id, e.detail.tag)
     }
 
@@ -105,7 +104,7 @@ class Controller {
     }
 
     handleDeleteParticipant =  (e) => {
-        let confirmation = confirm("Are you sure you want to delete the participant? This will also delete them from all events.")
+        const confirmation = confirm("Are you sure you want to delete the participant? This will also delete them from all events.")
 
         if (confirmation) {
             model.deleteParticipant(e.detail)

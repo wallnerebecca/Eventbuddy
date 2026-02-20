@@ -20,10 +20,9 @@ class ParticipantItem extends HTMLElement {
     render() {
         this.innerHTML = this.template();
 
-        console.log(this.#participant);
-        let participantList = document.querySelector("participant-list");
+        const participantList = document.querySelector("participant-list");
 
-        let deleteButton = this.querySelector(`button.delete`)
+        const deleteButton = this.querySelector(`button.delete`)
         deleteButton.addEventListener("click", ()=> {
             participantList.dispatchEvent(
                 new CustomEvent("delete-participant", {
@@ -70,9 +69,8 @@ class ParticipantList extends HTMLElement {
     }
 
     render() {
-        console.log(`Rerendering Participants: ${this.#participants}`)
         this.innerHTML = "";
-        let container = document.createElement("div")
+        const container = document.createElement("div")
         container.classList.add("border", "px-4", "py-4")
 
         container.appendChild(
@@ -86,7 +84,7 @@ class ParticipantList extends HTMLElement {
 
         container.querySelector("#add-participant-form").addEventListener("submit", e => {
             e.preventDefault();
-            let formData = new FormData(e.target);
+            const formData = new FormData(e.target);
             this.dispatchEvent(new CustomEvent("add-participant", {
                 detail: {
                     name: formData.get("name"),
@@ -99,7 +97,7 @@ class ParticipantList extends HTMLElement {
     }
 
     header() {
-        let header = document.createElement("template");
+        const header = document.createElement("template");
         header.innerHTML = `
             <h1 class="text-2xl underline">Participant Management:</h1>
             <h2 class="text-xl font-bold py-2">Participants:</h2>
@@ -109,7 +107,7 @@ class ParticipantList extends HTMLElement {
     }
 
     createTagForm() {
-        let tagForm = document.createElement("template");
+        const tagForm = document.createElement("template");
         tagForm.innerHTML = `
             <h2 class="text-xl font-bold py-2">Add Participant:</h2>
             <form id="add-participant-form" action="#">
@@ -130,7 +128,7 @@ class ParticipantList extends HTMLElement {
     }
 
     participantItem(participant) {
-        let participantItem = document.createElement("participant-item");
+        const participantItem = document.createElement("participant-item");
         participantItem.participant = participant;
         return participantItem
     }
