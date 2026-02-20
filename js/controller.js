@@ -27,6 +27,7 @@ class Controller {
 
         document.querySelector("participant-list").addEventListener("add-participant", this.handleAddParticipant)
         document.querySelector("participant-list").addEventListener("delete-participant", this.handleDeleteParticipant)
+        document.querySelector("participant-list").addEventListener("edit-participant", this.handleEditParticipant)
 
         document.querySelector("user-view").addEventListener("user-login", this.handleUserLogin);
         document.querySelector("user-view").addEventListener("user-logout", this.handleUserLogout);
@@ -112,6 +113,21 @@ class Controller {
 
         if (confirmation) {
             model.deleteParticipant(e.detail.participantId)
+        }
+    }
+
+    handleEditParticipant = (e) => {
+        const emailTaken = model.participantAlreadyExists(e.detail.email)
+
+        if (emailTaken) {
+            alert("This email is already taken")
+        } else {
+            model.updateParticipant(
+                e.detail.participantId,
+                e.detail.name,
+                e.detail.email,
+                e.detail.avatar
+            )
         }
     }
 

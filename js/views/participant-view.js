@@ -31,6 +31,46 @@ class ParticipantItem extends HTMLElement {
                 })
             )
         });
+
+        const showParticipant = this.querySelector(".show-participant");
+        const editParticipant = this.querySelector(".edit-participant");
+        editParticipant.style.display = "none"
+
+        const editButton = this.querySelector(`button.edit`)
+        editButton.addEventListener("click", ()=> {
+            showParticipant.style.display = "none";
+            editParticipant.style.display = "block";
+        })
+
+        const cancelButton = this.querySelector(`button.cancel`)
+        cancelButton.addEventListener("click", (e)=> {
+            e.preventDefault()
+            showParticipant.style.display = "block";
+            editParticipant.style.display = "none";
+        })
+
+        const nameInput = this.querySelector(".name-input");
+        const emailInput = this.querySelector(".email-input");
+        const avatarInput = this.querySelector(".avatar-input");
+
+        const saveButton = this.querySelector(`button.save`)
+        saveButton.addEventListener("click", (e)=> {
+            e.preventDefault()
+
+            showParticipant.style.display = "block";
+            editParticipant.style.display = "none";
+
+            participantList.dispatchEvent(
+                new CustomEvent("edit-participant", {
+                    detail: {
+                        participantId: this.#participant.id,
+                        name: nameInput.value,
+                        email: emailInput.value,
+                        avatar: avatarInput.files[0]
+                    }
+                })
+            )
+        })
     }
     avatar() {
         if (this.#participant.avatar) {
@@ -44,7 +84,7 @@ class ParticipantItem extends HTMLElement {
 
     template() {
         return `
-            <div>
+            <div class="show-participant">
                 ${this.avatar()}
                 <span class="font-bold">Name:</span> ${this.#participant.name} <br />
                 <span class="font-bold">Email:</span> ${this.#participant.email} <br />
@@ -54,6 +94,21 @@ class ParticipantItem extends HTMLElement {
                 <button class="delete bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                     Delete
                 </button>
+            </div>
+            <div class="edit-participant">
+                <form class="edit-participant-form" action="#">
+                    <label for="name" class="mb-2" >Name:</label><br>
+                    <input id="name" name="name" type="text" class="name-input border shadow py-2 mb-3" value="${this.#participant.name}" required><br>
+    
+                    <label for="email" class="mb-2" >Email:</label><br>
+                    <input id="email" name="email" type="email" class="email-input border shadow py-2 mb-3" value="${this.#participant.email}" required><br>
+    
+                    <label for="avatar" class="mb-2" >Avatar (png or jpeg):</label><br>
+                    <input id="avatar" name="avatar" type="file" accept="image/png, image/jpeg" class="avatar-input border shadow py-2 mb-3"><br>
+    
+                    <button class="save bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">Save</button>
+                    <button class="cancel bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Cancel</button>
+                </form>
             </div>
         `
     }

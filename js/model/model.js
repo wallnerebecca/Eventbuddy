@@ -208,6 +208,22 @@ class EventBuddyModel extends EventTarget {
         return this.#participants.values().toArray().some(participant => participant.email === email);
     }
 
+    updateParticipant(
+        id,
+        name,
+        email,
+        avatar
+    ) {
+        const participant = this.#participants.get(id)
+        participant.name = name;
+        participant.email = email;
+        participant.avatar = avatar;
+
+
+        this.sendEventListChangedEvent();
+        this.sendParticipantsChangedEvent();
+
+    }
     addParticipantToEvent(eventId, participantId) {
         const participant = this.#participants.get(participantId)
         const event = this.#events.get(eventId)

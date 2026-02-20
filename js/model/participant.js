@@ -23,12 +23,24 @@ export default class Participant {
         return this.#name
     }
 
+    set name (value) {
+        this.#name = value
+    }
+
     get email() {
         return this.#email
     }
 
+    set email (value) {
+        this.#email = value
+    }
+
     get avatar() {
         return this.#avatar
+    }
+
+    set avatar (value) {
+        this.#avatar = value
     }
 
 }
