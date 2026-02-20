@@ -4,105 +4,117 @@ class Controller {
     constructor(){
     }
 
-    createEvent(title, datetime, location, description, icon) {
-        model.addEvent(
-            title,
-            new Date(datetime),
-            location,
-            description,
-            icon
-        );
-    }
-
-    updateEvent(id, title, datetime, location, description, icon) {
-        model.updateEvent(id, title, new Date(datetime), location, description, icon);
-    }
-
     init(){
         fetch('../json/users.json')
             .then(response => response.json())
-            .then(json => json.forEach(user => model.addUser(user)));
+            .then(json => json.users.forEach(user => model.addUser(user)));
 
-        document.querySelector("event-list").addEventListener("update-event", (e) => {
-            let formData = e.detail.formData
-            this.updateEvent(e.detail.id,formData.get("title"), formData.get("datetime"), formData.get("location"), formData.get("description"), formData.get("icon"));
-        });
+        document.querySelector("event-management").addEventListener("submit", this.handleAddEvent);
 
-        document.querySelector("event-list").addEventListener("delete-event", (e) => {
-            let confirmation = confirm("Are you sure you want to delete the event?")
+        document.querySelector("event-list").addEventListener("update-event", this.handleUpdateEvent);
+        document.querySelector("event-list").addEventListener("delete-event", this.handleDeleteEvent);
+        document.querySelector("event-list").addEventListener("add-tag-to-event", this.handleAddTagToEvent);
+        document.querySelector("event-list").addEventListener("delete-tag-from-event", this.handleDeleteTagFromEvent);
+        document.querySelector("event-list").addEventListener("add-participant-to-event", this.handleAddParticipantToEvent)
+        document.querySelector("event-list").addEventListener("remove-participant-from-event", this.handleRemoveParticipantFromEvent)
+
+        document.querySelector("filter-bar").addEventListener("update-status-filter", this.handleStatusFilterUpdate);
+        document.querySelector("filter-bar").addEventListener("update-tag-filter", this.handleTagFilterUpdate);
+        document.querySelector("filter-bar").addEventListener("update-participant-filter", this.handleParticipantFilterUpdate);
+
+        document.querySelector("tag-list").addEventListener("add-tag", this.handleAddTag)
+        document.querySelector("tag-list").addEventListener("delete-tag", this.handleDeleteTag)
+
+        document.querySelector("participant-list").addEventListener("add-participant", this.handleAddParticipant)
+        document.querySelector("participant-list").addEventListener("delete-participant", this.handleDeleteParticipant)
+
+        document.querySelector("user-view").addEventListener("user-selected", this.handleSelectUser);
+    }
+
+
+
+    /* EVENT MANAGEMENT */
+    handleAddEvent = (e) => {
+        e.preventDefault();
+        let formData = new FormData(e.target);
+        model.addEvent(formData.get("title"), new Date(formData.get("datetime")), formData.get("location"), formData.get("description"), formData.get("icon"));
+    }
+    handleUpdateEvent = (e) => {
+        let formData = e.detail.formData
+        model.updateEvent(e.detail.id, formData.get("title"), new Date(formData.get("datetime")), formData.get("location"), formData.get("description"), formData.get("icon"));
+    }
+
+    handleDeleteEvent = (e) => {
+        let confirmation = confirm("Are you sure you want to delete the event?")
+
+        if (confirmation) {
+            model.deleteEvent(e.detail)
+        }
+    }
+
+    handleAddTagToEvent = (e) => {
+        model.addTagToEvent(e.detail.id, e.detail.tag)
+    }
+
+    handleDeleteTagFromEvent = (e) => {
+        console.log("Deleting tag from event:")
+        model.deleteTagFromEvent(e.detail.id, e.detail.tag)
+    }
+
+    handleAddParticipantToEvent = (e) => {
+       model.addParticipantToEvent(e.detail.id, e.detail.email)
+    }
+
+    handleRemoveParticipantFromEvent = (e) => {
+       model.removeParticipantFromEvent(e.detail.id, e.detail.email)
+    }
+
+    /* FILTER BAR */
+    handleStatusFilterUpdate = (e) => {
+        model.updateStatusFilters(e.detail);
+    }
+
+    handleTagFilterUpdate = (e) => {
+        model.updateTagFilters(e.detail);
+    }
+
+    handleParticipantFilterUpdate = (e) => {
+        model.updateParticipantFilters(e.detail);
+    }
+
+    /* TAG MANAGEMENT */
+    handleAddTag = (e) => {
+        model.addTag(e.detail)
+    }
+
+    handleDeleteTag = (e) => {
+        if(model.canDeleteTag(e.detail)) {
+            const confirmation = confirm("Are you sure you want to delete the tag?")
 
             if (confirmation) {
-                model.deleteEvent(e.detail)
-            }
-        });
-
-        document.querySelector("event-list").addEventListener("add-tag-to-event", (e) => {
-            console.log("Adding tag to event:")
-            model.addTagToEvent(e.detail.id, e.detail.tag)
-        });
-
-        document.querySelector("event-list").addEventListener("delete-tag-from-event", (e) => {
-            console.log("Deleting tag from event:")
-            model.deleteTagFromEvent(e.detail.id, e.detail.tag)
-        });
-
-        document.querySelector("event-list").addEventListener("add-participant-to-event", (e) => {
-            console.log(`Adding participant-to event: ${JSON.stringify(e.detail)}`)
-            model.addParticipantToEvent(e.detail.id, e.detail.email)
-        })
-
-        document.querySelector("event-list").addEventListener("remove-participant-from-event", (e) => {
-            console.log(`Deleting participant from event: ${JSON.stringify(e.detail)}`)
-            model.removeParticipantFromEvent(e.detail.id, e.detail.email)
-        })
-
-        document.querySelector("filter-bar").addEventListener("update-status-filter", (e) => {
-            model.updateStatusFilters(e.detail);
-        });
-
-        document.querySelector("filter-bar").addEventListener("update-tag-filter", (e) => {
-            model.updateTagFilters(e.detail);
-        });
-
-        document.querySelector("filter-bar").addEventListener("update-participant-filter", (e) => {
-            model.updateParticipantFilters(e.detail);
-        });
-
-        document.getElementById("create-event-form").addEventListener("submit", (e) => {
-            console.log(e)
-            e.preventDefault();
-            let formData = new FormData(e.target);
-            this.createEvent(formData.get("title"), formData.get("datetime"), formData.get("location"), formData.get("description"), formData.get("icon"));
-        });
-
-        document.getElementById("tag-list").addEventListener("add-tag", (e) => {
-            model.addTag(e.detail)
-        })
-
-        document.getElementById("tag-list").addEventListener("delete-tag", (e) => {
-            if(model.canDeleteTag(e.detail)) {
                 model.deleteTag(e.detail);
-            } else {
-                alert("Cannot delete the tag: it is still coupled to events.");
             }
-        })
+        } else {
+            alert("Cannot delete the tag: it is still coupled to events.");
+        }
+    }
 
-        document.getElementById("participant-list").addEventListener("add-participant", (e) => {
-            console.log(`Adding participant ${e.detail}`)
-            model.addParticipant(e.detail.name, e.detail.email.toLowerCase(), e.detail.avatar)
-        })
+    /* PARTICIPANT MANAGEMENT */
+    handleAddParticipant = (e) => {
+        model.addParticipant(e.detail.name, e.detail.email.toLowerCase(), e.detail.avatar)
+    }
 
-        document.getElementById("participant-list").addEventListener("delete-participant", (e) => {
-            let confirmation = confirm("Are you sure you want to delete the participant? This will also delete them from all events.")
+    handleDeleteParticipant =  (e) => {
+        let confirmation = confirm("Are you sure you want to delete the participant? This will also delete them from all events.")
 
-            if (confirmation) {
-                model.deleteParticipant(e.detail)
-            }
-        })
+        if (confirmation) {
+            model.deleteParticipant(e.detail)
+        }
+    }
 
-        document.querySelector("user-view").addEventListener("user-selected", (e) => {
-            model.setActiveUser(e.detail.user)
-        });
+    /* USER */
+    handleSelectUser = (e) => {
+        model.setActiveUser(e.detail.user)
     }
 }
 

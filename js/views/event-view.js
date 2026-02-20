@@ -244,8 +244,12 @@ class EventItem extends HTMLElement {
                     
                     </div>
                     <hr class="py-2"/>
-                    ${button(`edit-${eventId}`, "Edit Event")}
-                    ${button(`delete-${eventId}`, "Delete Event")}
+                    <button id="edit-${eventId}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Edit Event
+                    </button>
+                    <button id="delete-${eventId}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Delete Event
+                    </button>
                 </div>
                 <div id="edit-event-${eventId}">
                     <form id="edit-event-form-${this.#event.id}" action="#">
@@ -266,11 +270,10 @@ class EventItem extends HTMLElement {
                         <button type="submit" id="update-event-${eventId}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                             Save
                         </button>
-                        ${button(`cancel-edit-${eventId}`, "Cancel")}
+                        <button id="cancel-edit-${eventId}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Cancel
+                        </button>
                     </form>   
-                </div>
-                <div>
-                  Available Tags: ${JSON.stringify(this.#availableTags)}
                 </div>
             </div>
         `
