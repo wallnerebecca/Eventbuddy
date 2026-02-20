@@ -35,8 +35,24 @@ class EventBuddyModel extends EventTarget {
         )
     }
 
-    setActiveUser(user) {
+    login(user) {
         this.#activeUser = user;
+        this.sendUpdateActiveUserEvent()
+    }
+
+    logout() {
+        this.#activeUser = undefined;
+        this.sendUpdateActiveUserEvent()
+    }
+
+    sendUpdateActiveUserEvent() {
+        this.dispatchEvent(
+            new CustomEvent("update-active-user", {
+                detail: {
+                    user: this.#activeUser
+                }
+            })
+        )
     }
 
     addEvent(title,

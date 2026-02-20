@@ -28,7 +28,8 @@ class Controller {
         document.querySelector("participant-list").addEventListener("add-participant", this.handleAddParticipant)
         document.querySelector("participant-list").addEventListener("delete-participant", this.handleDeleteParticipant)
 
-        document.querySelector("user-view").addEventListener("user-selected", this.handleSelectUser);
+        document.querySelector("user-view").addEventListener("user-login", this.handleUserLogin);
+        document.querySelector("user-view").addEventListener("user-logout", this.handleUserLogout);
     }
 
 
@@ -117,8 +118,12 @@ class Controller {
     }
 
     /* USER */
-    handleSelectUser = (e) => {
-        model.setActiveUser(e.detail.user)
+    handleUserLogin = (e) => {
+        model.login(e.detail.user)
+    }
+
+    handleUserLogout = (e) => {
+        model.logout()
     }
 }
 
