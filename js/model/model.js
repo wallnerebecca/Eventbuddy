@@ -53,7 +53,7 @@ class EventBuddyModel extends EventTarget {
         )
         console.log(`Adding event ${event.id}: ${event.title}`);
         this.#events.set(event.id, event);
-        this.sendUpdatedEvent();
+        this.sendEventListChangedEvent();
     }
 
     updateEvent(id,
@@ -69,16 +69,16 @@ class EventBuddyModel extends EventTarget {
         event.location = location;
         event.description = description;
         event.icon = icon;
-        this.sendUpdatedEvent();
+        this.sendEventListChangedEvent();
     }
 
     deleteEvent(id) {
         console.log(`Deleting event ${id}`);
         this.#events.delete(id);
-        this.sendUpdatedEvent();
+        this.sendEventListChangedEvent();
     }
 
-    sendUpdatedEvent() {
+    sendEventListChangedEvent() {
 
         const filteredEvents =
             this.#events
@@ -133,19 +133,19 @@ class EventBuddyModel extends EventTarget {
     updateStatusFilters(selectedOptions) {
         console.log(`Updating status filters with ${JSON.stringify(selectedOptions)} selectedOptions`);
         this.#filters.setFilterValues("status", selectedOptions || []);
-        this.sendUpdatedEvent();
+        this.sendEventListChangedEvent();
     }
 
     updateTagFilters(selectedOptions) {
         console.log(`Updating tag filters with ${JSON.stringify(selectedOptions)} selectedOptions`);
         this.#filters.setFilterValues("tag", selectedOptions || []);
-        this.sendUpdatedEvent();
+        this.sendEventListChangedEvent();
     }
 
     updateParticipantFilters(selectedOptions) {
         console.log(`Updating participant filters with ${JSON.stringify(selectedOptions)} selectedOptions`);
         this.#filters.setFilterValues("participant", selectedOptions || []);
-        this.sendUpdatedEvent();
+        this.sendEventListChangedEvent();
     }
 
     // Participant
@@ -163,13 +163,7 @@ class EventBuddyModel extends EventTarget {
         console.log(`Adding participant with email ${email}`);
 
         this.#participants.set(participant.email, participant)
-        this.dispatchEvent(
-            new CustomEvent("participants-changed", {
-                detail: {
-                    participants: this.#participants.values().toArray()
-                }
-            })
-        )
+        this.sendParticipantsChangedEvent()
     }
 
     participantAlreadyExists(email) {
@@ -182,7 +176,7 @@ class EventBuddyModel extends EventTarget {
 
         if (event && participant) {
             event.addParticipant(participant)
-            this.sendUpdatedEvent();
+            this.sendEventListChangedEvent();
         }
     }
 
@@ -192,7 +186,7 @@ class EventBuddyModel extends EventTarget {
 
         if (event && participant) {
             event.removeParticipant(participant)
-            this.sendUpdatedEvent();
+            this.sendEventListChangedEvent();
         }
     }
 
@@ -206,6 +200,11 @@ class EventBuddyModel extends EventTarget {
             event.removeParticipant(participant)
         })
 
+        this.sendParticipantsChangedEvent()
+        this.sendEventListChangedEvent()
+    }
+
+    sendParticipantsChangedEvent() {
         this.dispatchEvent(
             new CustomEvent("participants-changed", {
                 detail: {
@@ -213,9 +212,7 @@ class EventBuddyModel extends EventTarget {
                 }
             })
         )
-        this.sendUpdatedEvent()
     }
-
     // Tags
     addTag(tagName) {
         if (this.tagAlreadyExists(tagName)) {
@@ -226,13 +223,7 @@ class EventBuddyModel extends EventTarget {
         console.log(`Adding tag ${tag}`);
 
         this.#tags.set(tag.id, tag);
-        this.dispatchEvent(
-            new CustomEvent("tag-list-changed", {
-                detail: {
-                    tags: this.#tags.values().toArray()
-                }
-            })
-        )
+        this.sendTagListChangedEvent()
     }
 
     tagAlreadyExists(tagName) {
@@ -245,7 +236,7 @@ class EventBuddyModel extends EventTarget {
 
         if (event && tag) {
             event.addTag(tag);
-            this.sendUpdatedEvent();
+            this.sendEventListChangedEvent();
         }
     }
 
@@ -255,7 +246,7 @@ class EventBuddyModel extends EventTarget {
 
         if (event && tag) {
             event.removeTag(tag);
-            this.sendUpdatedEvent();
+            this.sendEventListChangedEvent();
         }
     }
 
@@ -271,6 +262,10 @@ class EventBuddyModel extends EventTarget {
         console.log(`Current tags: ${this.#tags.values().toArray()}`)
         this.#tags.delete(tagId);
         console.log(`Current tags after delete: ${this.#tags.values().toArray()}`)
+        this.sendTagListChangedEvent()
+    }
+
+    sendTagListChangedEvent() {
         this.dispatchEvent(
             new CustomEvent("tag-list-changed", {
                 detail: {
@@ -278,7 +273,6 @@ class EventBuddyModel extends EventTarget {
                 }
             })
         )
-
     }
 }
 
