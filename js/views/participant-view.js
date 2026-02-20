@@ -91,7 +91,7 @@ class ParticipantList extends HTMLElement {
             container.appendChild(this.participantItem(participant))
         });
 
-        container.appendChild(this.createTagForm().content)
+        container.appendChild(this.createParticipantForm().content)
 
         container.querySelector("#add-participant-form").addEventListener("submit", e => {
             e.preventDefault();
@@ -118,9 +118,9 @@ class ParticipantList extends HTMLElement {
         return header;
     }
 
-    createTagForm() {
-        const tagForm = document.createElement("template");
-        tagForm.innerHTML = `
+    createParticipantForm() {
+        const participantForm = document.createElement("template");
+        participantForm.innerHTML = `
             <h2 class="text-xl font-bold py-2">Add Participant:</h2>
             <form id="add-participant-form" action="#">
                 <label for="name" class="mb-2" >Name:</label><br>
@@ -136,7 +136,7 @@ class ParticipantList extends HTMLElement {
             </form>
         `
 
-        return tagForm;
+        return participantForm;
     }
 
     participantItem(participant) {
