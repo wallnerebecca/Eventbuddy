@@ -60,11 +60,11 @@ class Controller {
     }
 
     handleAddParticipantToEvent = (e) => {
-       model.addParticipantToEvent(e.detail.id, e.detail.email)
+       model.addParticipantToEvent(e.detail.id, e.detail.participantId)
     }
 
     handleRemoveParticipantFromEvent = (e) => {
-       model.removeParticipantFromEvent(e.detail.id, e.detail.email)
+       model.removeParticipantFromEvent(e.detail.id, e.detail.participantId)
     }
 
     /* FILTER BAR */
@@ -111,7 +111,7 @@ class Controller {
         const confirmation = confirm("Are you sure you want to delete the participant? This will also delete them from all events.")
 
         if (confirmation) {
-            model.deleteParticipant(e.detail.participantEmail)
+            model.deleteParticipant(e.detail.participantId)
         }
     }
 

@@ -1,4 +1,5 @@
 export default class Participant {
+    #id;
     #name
     #email
     #avatar
@@ -8,9 +9,14 @@ export default class Participant {
         email,
         avatar
     ) {
+        this.#id = crypto.randomUUID()
         this.#name = name
         this.#email = email
         this.#avatar = avatar
+    }
+
+    get id() {
+        return this.#id
     }
 
     get name() {

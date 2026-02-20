@@ -143,14 +143,14 @@ class EventBuddyModel extends EventTarget {
                     return true;
                 })
                 .filter(event => {
-                    const selectedParticipantEmails = this.#filters.getFilterValues("participant");
-                    console.log(selectedParticipantEmails);
+                    const selectedParticipantIds = this.#filters.getFilterValues("participant");
+                    console.log(selectedParticipantIds);
 
-                    if(selectedParticipantEmails.length > 0) {
-                        const eventEmails = event.participants.map(participant => participant.email)
-                        console.log(eventEmails);
+                    if(selectedParticipantIds.length > 0) {
+                        const eventParticipantIds = event.participants.map(participant => participant.id)
+                        console.log(eventParticipantIds);
 
-                        const intersection = eventEmails.filter(tag => selectedParticipantEmails.includes(tag))
+                        const intersection = eventParticipantIds.filter(tag => selectedParticipantIds.includes(tag))
 
                         return intersection.length > 0;
                     }
@@ -200,16 +200,16 @@ class EventBuddyModel extends EventTarget {
         const participant = new Participant(name, email, avatar)
         console.log(`Adding participant with email ${email}`);
 
-        this.#participants.set(participant.email, participant)
+        this.#participants.set(participant.id, participant)
         this.sendParticipantsChangedEvent()
     }
 
     participantAlreadyExists(email) {
-        return this.#participants.keys().toArray().includes(email)
+        return this.#participants.values().toArray().some(participant => participant.email === email);
     }
 
-    addParticipantToEvent(eventId, email) {
-        const participant = this.#participants.get(email)
+    addParticipantToEvent(eventId, participantId) {
+        const participant = this.#participants.get(participantId)
         const event = this.#events.get(eventId)
 
         if (event && participant) {
@@ -218,8 +218,8 @@ class EventBuddyModel extends EventTarget {
         }
     }
 
-    removeParticipantFromEvent(eventId, email) {
-        const participant = this.#participants.get(email)
+    removeParticipantFromEvent(eventId, participantId) {
+        const participant = this.#participants.get(participantId)
         const event = this.#events.get(eventId)
 
         if (event && participant) {
@@ -228,11 +228,11 @@ class EventBuddyModel extends EventTarget {
         }
     }
 
-    deleteParticipant(email) {
-        console.log(`Deleting participant with email ${email}`);
+    deleteParticipant(participantId) {
+        console.log(`Deleting participant with email ${participantId}`);
 
-        const participant = this.#participants.get(email)
-        this.#participants.delete(email)
+        const participant = this.#participants.get(participantId)
+        this.#participants.delete(participantId)
 
         this.#events.values().toArray().map(event => {
             event.removeParticipant(participant)

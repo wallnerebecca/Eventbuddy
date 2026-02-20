@@ -113,7 +113,7 @@ class FilterBar extends HTMLElement {
         const sortedParticipants = participants.sort((a, b) => a.name <  b.name ? -1 : (a.name > b.name) ? 1 : 0);
         sortedParticipants.map((participant) => {
             const option = document.createElement("option");
-            option.value = participant.email;
+            option.value = participant.id;
             option.text = `${participant.name} (${participant.email})`;
             select.appendChild(option)
         })

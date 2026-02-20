@@ -106,11 +106,11 @@ export default class Event {
     }
 
     addParticipant(participant) {
-        this.#participants.set(participant.email, participant);
+        this.#participants.set(participant.id, participant);
     }
 
     removeParticipant(participant) {
-        this.#participants.delete(participant.email);
+        this.#participants.delete(participant.id);
     }
 }
 

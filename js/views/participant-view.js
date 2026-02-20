@@ -26,7 +26,7 @@ class ParticipantItem extends HTMLElement {
             participantList.dispatchEvent(
                 new CustomEvent("delete-participant", {
                     detail: {
-                        participantEmail: this.#participant.email
+                        participantId: this.#participant.id
                     }
                 })
             )

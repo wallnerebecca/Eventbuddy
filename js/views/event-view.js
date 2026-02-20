@@ -174,7 +174,7 @@ class EventItem extends HTMLElement {
         participantSelect.appendChild(chooseParticipant)
         this.#availableParticipants.map(participant => {
             const option = document.createElement("option");
-            option.value = participant.email;
+            option.value = participant.id;
             option.text = `${participant.name} (${participant.email})`;
 
             participantSelect.appendChild(option);
@@ -188,7 +188,7 @@ class EventItem extends HTMLElement {
                 new CustomEvent("add-participant-to-event", {
                     detail: {
                         id: this.#event.id,
-                        email: participantSelect.value
+                        participantId: participantSelect.value
                     }
                 })
             )
@@ -209,7 +209,7 @@ class EventItem extends HTMLElement {
                     new CustomEvent("remove-participant-from-event", {
                         detail: {
                             id: this.#event.id,
-                            email: participant.email,
+                            participantId: participant.id,
                         }
                     })
                 )
