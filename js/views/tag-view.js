@@ -25,7 +25,9 @@ class TagItem extends HTMLElement {
         deleteButton.addEventListener("click", ()=> {
             tagList.dispatchEvent(
                 new CustomEvent("delete-tag", {
-                    detail: this.#tag.id
+                    detail: {
+                        tagId: this.#tag.id
+                    }
                 })
             )
         });
@@ -51,7 +53,7 @@ class TagList extends HTMLElement {
         super();
         this.#tags = [];
         model.addEventListener("tag-list-changed", (event) => {
-            this.#tags = event.detail;
+            this.#tags = event.detail.tags;
             this.render();
         });
     }
@@ -78,7 +80,9 @@ class TagList extends HTMLElement {
             e.preventDefault();
             const formData = new FormData(e.target);
             this.dispatchEvent(new CustomEvent("add-tag", {
-                detail: formData.get("name")
+                detail: {
+                    tagName: formData.get("name")
+                }
             }))
         })
         this.appendChild(container)

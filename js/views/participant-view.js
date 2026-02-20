@@ -25,7 +25,9 @@ class ParticipantItem extends HTMLElement {
         deleteButton.addEventListener("click", ()=> {
             participantList.dispatchEvent(
                 new CustomEvent("delete-participant", {
-                    detail: this.#participant.email
+                    detail: {
+                        participantEmail: this.#participant.email
+                    }
                 })
             )
         });
@@ -68,7 +70,7 @@ class ParticipantList extends HTMLElement {
         super();
         this.#participants = [];
         model.addEventListener("participants-changed", (event) => {
-            this.#participants = event.detail;
+            this.#participants = event.detail.participants;
             this.render();
         });
     }

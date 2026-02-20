@@ -28,7 +28,9 @@ class EventBuddyModel extends EventTarget {
         this.#users.push(new User(username, email));
         this.dispatchEvent(
             new CustomEvent("users-updated", {
-                detail: this.#users
+                detail: {
+                    users: this.#users
+                }
             })
         )
     }
@@ -120,25 +122,27 @@ class EventBuddyModel extends EventTarget {
 
         this.dispatchEvent(
             new CustomEvent("event-list-changed", {
-                detail: filteredEvents
+                detail: {
+                    events: filteredEvents
+                }
             })
         );
     }
 
     // Filters
-    updateStatusFilters({selectedOptions}) {
+    updateStatusFilters(selectedOptions) {
         console.log(`Updating status filters with ${JSON.stringify(selectedOptions)} selectedOptions`);
         this.#filters.setFilterValues("status", selectedOptions || []);
         this.sendUpdatedEvent();
     }
 
-    updateTagFilters({selectedOptions}) {
+    updateTagFilters(selectedOptions) {
         console.log(`Updating tag filters with ${JSON.stringify(selectedOptions)} selectedOptions`);
         this.#filters.setFilterValues("tag", selectedOptions || []);
         this.sendUpdatedEvent();
     }
 
-    updateParticipantFilters({selectedOptions}) {
+    updateParticipantFilters(selectedOptions) {
         console.log(`Updating participant filters with ${JSON.stringify(selectedOptions)} selectedOptions`);
         this.#filters.setFilterValues("participant", selectedOptions || []);
         this.sendUpdatedEvent();
@@ -161,7 +165,9 @@ class EventBuddyModel extends EventTarget {
         this.#participants.set(participant.email, participant)
         this.dispatchEvent(
             new CustomEvent("participants-changed", {
-                detail: this.#participants.values().toArray()
+                detail: {
+                    participants: this.#participants.values().toArray()
+                }
             })
         )
     }
@@ -202,7 +208,9 @@ class EventBuddyModel extends EventTarget {
 
         this.dispatchEvent(
             new CustomEvent("participants-changed", {
-                detail: this.#participants.values().toArray()
+                detail: {
+                    participants: this.#participants.values().toArray()
+                }
             })
         )
         this.sendUpdatedEvent()
@@ -220,7 +228,9 @@ class EventBuddyModel extends EventTarget {
         this.#tags.set(tag.id, tag);
         this.dispatchEvent(
             new CustomEvent("tag-list-changed", {
-                detail: this.#tags.values().toArray()
+                detail: {
+                    tags: this.#tags.values().toArray()
+                }
             })
         )
     }
@@ -263,7 +273,9 @@ class EventBuddyModel extends EventTarget {
         console.log(`Current tags after delete: ${this.#tags.values().toArray()}`)
         this.dispatchEvent(
             new CustomEvent("tag-list-changed", {
-                detail: this.#tags.values().toArray()
+                detail: {
+                    tags: this.#tags.values().toArray()
+                }
             })
         )
 

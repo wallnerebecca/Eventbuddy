@@ -8,10 +8,10 @@ class FilterBar extends HTMLElement {
 
     connectedCallback() {
         model.addEventListener("tag-list-changed", e => {
-            this.updateTagFilter(e.detail)
+            this.updateTagFilter(e.detail.tags)
         })
         model.addEventListener("participants-changed", e => {
-            this.updateParticipantFilter(e.detail)
+            this.updateParticipantFilter(e.detail.participants)
         })
         this.render();
     }

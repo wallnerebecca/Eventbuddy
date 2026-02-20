@@ -48,7 +48,7 @@ class Controller {
         const confirmation = confirm("Are you sure you want to delete the event?")
 
         if (confirmation) {
-            model.deleteEvent(e.detail)
+            model.deleteEvent(e.detail.eventId)
         }
     }
 
@@ -70,28 +70,28 @@ class Controller {
 
     /* FILTER BAR */
     handleUpdateStatusFilter = (e) => {
-        model.updateStatusFilters(e.detail);
+        model.updateStatusFilters(e.detail.selectedOptions);
     }
 
     handleUpdateTagsFilter = (e) => {
-        model.updateTagFilters(e.detail);
+        model.updateTagFilters(e.detail.selectedOptions);
     }
 
     handleUpdateParticipantsFilter = (e) => {
-        model.updateParticipantFilters(e.detail);
+        model.updateParticipantFilters(e.detail.selectedOptions);
     }
 
     /* TAG MANAGEMENT */
     handleAddTag = (e) => {
-        model.addTag(e.detail)
+        model.addTag(e.detail.tagName)
     }
 
     handleDeleteTag = (e) => {
-        if(model.canDeleteTag(e.detail)) {
+        if(model.canDeleteTag(e.detail.tagId)) {
             const confirmation = confirm("Are you sure you want to delete the tag?")
 
             if (confirmation) {
-                model.deleteTag(e.detail);
+                model.deleteTag(e.detail.tagId);
             }
         } else {
             alert("Cannot delete the tag: it is still coupled to events.");
@@ -107,7 +107,7 @@ class Controller {
         const confirmation = confirm("Are you sure you want to delete the participant? This will also delete them from all events.")
 
         if (confirmation) {
-            model.deleteParticipant(e.detail)
+            model.deleteParticipant(e.detail.participantEmail)
         }
     }
 

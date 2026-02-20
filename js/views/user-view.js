@@ -11,7 +11,7 @@ class UserView extends HTMLElement {
 
     connectedCallback() {
         model.addEventListener("users-updated", e => {
-            this.#sortedUsers = e.detail.sort((a, b) => a.name <  b.name ? -1 : (a.name > b.name) ? 1 : 0);
+            this.#sortedUsers = e.detail.users.sort((a, b) => a.name <  b.name ? -1 : (a.name > b.name) ? 1 : 0);
             this.render();
         })
         this.render();

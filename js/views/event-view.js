@@ -40,7 +40,9 @@ class EventItem extends HTMLElement {
         deleteButton.addEventListener("click", ()=> {
            eventList.dispatchEvent(
                 new CustomEvent("delete-event", {
-                    detail: this.#event.id
+                    detail: {
+                        eventId: this.#event.id
+                    }
                 })
             )
         });
@@ -290,15 +292,15 @@ class EventList extends HTMLElement {
         this.#availableTags = []
         this.#availableParticipants = []
         model.addEventListener("event-list-changed", (event) => {
-            this.#events = event.detail;
+            this.#events = event.detail.events;
             this.render();
         });
         model.addEventListener("tag-list-changed", (event) => {
-            this.#availableTags = event.detail
+            this.#availableTags = event.detail.tags
             this.render();
         })
         model.addEventListener("participants-changed", (event) => {
-            this.#availableParticipants = event.detail
+            this.#availableParticipants = event.detail.participants
             this.render();
         })
     }
