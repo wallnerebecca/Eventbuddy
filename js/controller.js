@@ -83,7 +83,12 @@ class Controller {
 
     /* TAG MANAGEMENT */
     handleAddTag = (e) => {
-        model.addTag(e.detail.tagName)
+        const tagName = e.detail.tagName.trim();
+        if (model.isValidTagName(tagName)) {
+            model.addTag(tagName)
+        } else {
+            alert("Unable to add tag: tag must be between 1 and 20 characters long")
+        }
     }
 
     handleDeleteTag = (e) => {

@@ -226,6 +226,10 @@ class EventBuddyModel extends EventTarget {
         this.sendTagListChangedEvent()
     }
 
+    isValidTagName(tagName) {
+        return tagName.length > 0 && tagName.length < 20;
+    }
+
     tagAlreadyExists(tagName) {
         return this.#tags.keys().toArray().includes(tagName)
     }
