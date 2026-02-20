@@ -1,5 +1,4 @@
 import {model} from "../model/model.js";
-import {button} from "./templates.js";
 
 class TagItem extends HTMLElement {
 

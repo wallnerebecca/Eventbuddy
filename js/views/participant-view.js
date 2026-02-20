@@ -1,5 +1,4 @@
 import {model} from "../model/model.js";
-import {button} from "./templates.js";
 
 class ParticipantItem extends HTMLElement {
 
@@ -31,10 +30,20 @@ class ParticipantItem extends HTMLElement {
             )
         });
     }
+    avatar() {
+        if (this.#participant.avatar.size > 0) {
+            const imgSrc = URL.createObjectURL(this.#participant.avatar);
+
+            return `<img src=${imgSrc} width="200" height="200" alt="${this.#participant.name}'s avatar"/>`;
+        } else {
+            return ``
+        }
+    }
 
     template() {
         return `
             <div>
+                ${this.avatar()}
                 <span class="font-bold">Name:</span> ${this.#participant.name} <br />
                 <span class="font-bold">Email:</span> ${this.#participant.email} <br />
                 <button class="edit bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
@@ -85,6 +94,7 @@ class ParticipantList extends HTMLElement {
         container.querySelector("#add-participant-form").addEventListener("submit", e => {
             e.preventDefault();
             const formData = new FormData(e.target);
+            console.log(formData)
             this.dispatchEvent(new CustomEvent("add-participant", {
                 detail: {
                     name: formData.get("name"),
