@@ -64,13 +64,19 @@ class EventItem extends HTMLElement {
         });
 
         const form = this.querySelector(`#edit-event-form-${this.#event.id}`)
+        const iconInput = form.querySelector("#image")
         form.addEventListener("submit", (e) => {
             e.preventDefault();
+            const formData = new FormData(e.target);
             eventList.dispatchEvent(
                 new CustomEvent("update-event", {
                     detail: {
                         id: this.#event.id,
-                        formData: new FormData(e.target)
+                        title: formData.get("title"),
+                        datetime: new Date(formData.get("datetime")),
+                        location: formData.get("location"),
+                        description: formData.get("description"),
+                        icon: iconInput.files[0]
                     }
                 })
             );
@@ -86,7 +92,6 @@ class EventItem extends HTMLElement {
             datetime: getDateString(this.#event.datetime),
             location: this.#event.location,
             description: this.#event.description,
-            image: this.#event.icon
         }
 
         Object.entries(prefilledValues).forEach(([name, value]) => {
@@ -223,6 +228,16 @@ class EventItem extends HTMLElement {
         }
     }
 
+    icon() {
+        if (this.#event.icon) {
+            const imgSrc = URL.createObjectURL(this.#event.icon);
+
+            return `<img src=${imgSrc} width="200" height="200" alt="${this.#event.title}'s icon"/>`;
+        } else {
+            return ``
+        }
+    }
+
     template() {
         const eventId = this.#event.id;
 
@@ -230,6 +245,7 @@ class EventItem extends HTMLElement {
             <div class="border px-4 py-4 backdrop-grayscale-25">
                 <div id="event-info-${eventId}">
                     <span><span class="text-2xl">${this.#event.title} - ${this.#event.status.description}</span> <span class="text-sm">(${eventId})</span></span>
+                    ${this.icon()}
                     <h3 class="text-xl">${this.#event.location} - ${this.#event.datetime.toLocaleString(this.getLang())} (local time)</h3>
                     ${this.getCreatedBy()}
                     <div id="tags-list-${eventId}">

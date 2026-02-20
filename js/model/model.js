@@ -24,6 +24,19 @@ class EventBuddyModel extends EventTarget {
         this.#activeUser = undefined
     }
 
+    initializeFromJson(data) {
+        data.users.forEach(user => this.addUser(user))
+        data.tags.forEach(tag => this.addTag(tag))
+        data.participants.forEach(participant => this.addParticipant(participant.name, participant.email))
+        data.events.forEach(event => this.#addEvent(
+            event.name,
+            new Date(event.datetime),
+            event.location,
+            event.description,
+            undefined,
+            this.#users.find(user => user.email === event.createdBy)
+        ))
+    }
     addUser({username, email}) {
         this.#users.push(new User(username, email));
         this.dispatchEvent(
@@ -55,21 +68,30 @@ class EventBuddyModel extends EventTarget {
         )
     }
 
-    addEvent(title,
-             datetime,
-             location,
-             description,
-             icon) {
+    #addEvent(title,
+              datetime,
+              location,
+              description,
+              icon,
+              createdBy) {
         const event = new Event(title,
             datetime,
             location,
             description,
             icon,
-            this.#activeUser
+            createdBy
         )
         console.log(`Adding event ${event.id}: ${event.title}`);
         this.#events.set(event.id, event);
         this.sendEventListChangedEvent();
+    }
+
+    addEvent(title,
+             datetime,
+             location,
+             description,
+             icon) {
+        this.#addEvent(title, datetime, location, description, icon, this.#activeUser)
     }
 
     updateEvent(id,

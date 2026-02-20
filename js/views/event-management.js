@@ -9,6 +9,27 @@ class EventManagement extends HTMLElement {
 
     render() {
         this.innerHTML = this.template();
+
+        const fileInput = this.querySelector("input#image")
+
+        const form = this.querySelector("#create-event-form");
+        form.addEventListener("submit", event => {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            console.log(fileInput.files[0])
+            this.dispatchEvent(
+                new CustomEvent("add-event", {
+                    detail: {
+                        title: formData.get("title"),
+                        datetime: new Date(formData.get("datetime")),
+                        location: formData.get("location"),
+                        description: formData.get("description"),
+                        icon: fileInput.files[0], // needs special handling because otherwise it's hard to tell if no file is given
+                    }
+                })
+            )
+        })
     }
 
     template() {

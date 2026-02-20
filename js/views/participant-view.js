@@ -33,7 +33,7 @@ class ParticipantItem extends HTMLElement {
         });
     }
     avatar() {
-        if (this.#participant.avatar.size > 0) {
+        if (this.#participant.avatar) {
             const imgSrc = URL.createObjectURL(this.#participant.avatar);
 
             return `<img src=${imgSrc} width="200" height="200" alt="${this.#participant.name}'s avatar"/>`;
@@ -93,6 +93,8 @@ class ParticipantList extends HTMLElement {
 
         container.appendChild(this.createParticipantForm().content)
 
+        const avatar = container.querySelector("#avatar")
+
         container.querySelector("#add-participant-form").addEventListener("submit", e => {
             e.preventDefault();
             const formData = new FormData(e.target);
@@ -101,7 +103,7 @@ class ParticipantList extends HTMLElement {
                 detail: {
                     name: formData.get("name"),
                     email: formData.get("email"),
-                    avatar: formData.get("avatar")
+                    avatar: avatar.files[0]
                 }
             }))
         })

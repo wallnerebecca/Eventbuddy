@@ -8,8 +8,8 @@
 - [x] Every event has: Title, Date & Time, Place, Description, Status (Planned/Completed) and optional logo/symbol
 
 ## Event-Participant-Assignment (n:m)
-- [ ] An event can have multiple participants
-- [ ] A participants can be assigned to multiple events
+- [x] An event can have multiple participants
+- [x] A participants can be assigned to multiple events
 - [ ] When a participant is assigned to an event, he receives an invitation
 
 ## Tagging
@@ -19,7 +19,7 @@
 
 ## Filter & Status
 - [x] Filter by Status
-- [ ] Filter by Participant
+- [x] Filter by Participant
 - [x] Filter by Tags
 
 ## Participant Management (optional)

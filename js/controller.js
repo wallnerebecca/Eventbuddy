@@ -7,9 +7,9 @@ class Controller {
     init(){
         fetch('../json/users.json')
             .then(response => response.json())
-            .then(json => json.users.forEach(user => model.addUser(user)));
+            .then(json => model.initializeFromJson(json));
 
-        document.querySelector("event-management").addEventListener("submit", this.handleAddEvent);
+        document.querySelector("event-management").addEventListener("add-event", this.handleAddEvent);
 
         document.querySelector("event-list").addEventListener("update-event", this.handleUpdateEvent);
         document.querySelector("event-list").addEventListener("delete-event", this.handleDeleteEvent);
@@ -36,13 +36,11 @@ class Controller {
 
     /* EVENT MANAGEMENT */
     handleAddEvent = (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        model.addEvent(formData.get("title"), new Date(formData.get("datetime")), formData.get("location"), formData.get("description"), formData.get("icon"));
+        model.addEvent(e.detail.title, e.detail.datetime, e.detail.location, e.detail.description, e.detail.icon);
     }
+
     handleUpdateEvent = (e) => {
-        const formData = e.detail.formData
-        model.updateEvent(e.detail.id, formData.get("title"), new Date(formData.get("datetime")), formData.get("location"), formData.get("description"), formData.get("icon"));
+        model.updateEvent(e.detail.id, e.detail.title, e.detail.datetime, e.detail.location, e.detail.description, e.detail.icon);
     }
 
     handleDeleteEvent = (e) => {

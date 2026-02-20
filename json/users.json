@@ -9,7 +9,36 @@
       "email": "becii@becii"
     }
   ],
-  "tags": [],
-  "participants": [],
-  "events": []
+  "tags": [
+    "Pool",
+    "Beach",
+    "Party"
+  ],
+  "participants": [
+    {
+      "name": "rebecca",
+      "email": "rebecca@wallner"
+    },
+    {
+      "name": "simon",
+      "email": "simon@wallner"
+    },
+    {
+      "name": "rodney",
+      "email": "rodney@bixerman"
+    },
+    {
+      "name": "sophie",
+      "email": "sophie@wallner"
+    }
+  ],
+  "events": [
+    {
+      "name": "Pool Party",
+      "datetime": "2026-02-20T20:22",
+      "location": "Stadl-Paura",
+      "description": "Pool party at the pool",
+      "createdBy": "becii@becii"
+    }
+  ]
 }
