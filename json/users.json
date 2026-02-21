@@ -16,20 +16,24 @@
   ],
   "participants": [
     {
-      "name": "rebecca",
+      "name": "Rebecca Wallner",
       "email": "rebecca@wallner"
     },
     {
-      "name": "simon",
+      "name": "Simon Wallner",
       "email": "simon@wallner"
     },
     {
-      "name": "rodney",
+      "name": "Rodney Bixerman",
       "email": "rodney@bixerman"
     },
     {
-      "name": "sophie",
+      "name": "Sophie Wallner",
       "email": "sophie@wallner"
+    },
+    {
+      "name": "Hans Zimmer",
+      "email": "hans@zimmer"
     }
   ],
   "events": [
@@ -38,7 +42,34 @@
       "datetime": "2026-02-20T20:22",
       "location": "Stadl-Paura",
       "description": "Pool party at the pool",
-      "createdBy": "becii@becii"
+      "createdBy": "becii@becii",
+      "participants": [
+        "rebecca@wallner",
+        "simon@wallner",
+        "sophie@wallner"
+      ],
+      "tags": [
+        "Pool",
+        "Party"
+      ]
+    },
+    {
+      "name": "Beach Party",
+      "datetime": "2026-02-20T20:22",
+      "location": "Stadl-Paura",
+      "description": "Beach party at the beach",
+      "createdBy": "becii@becii",
+      "participants": [
+        "rebecca@wallner",
+        "simon@wallner",
+        "sophie@wallner",
+        "rodney@bixerman",
+        "hans@zimmer"
+      ],
+      "tags": [
+        "Beach",
+        "Party"
+      ]
     }
   ]
 }

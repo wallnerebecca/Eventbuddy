@@ -1,4 +1,81 @@
 import {model} from "../model/model.js";
+import {getLang} from "./utilities.js";
+
+class EventListItem extends HTMLElement {
+
+    #event
+
+    constructor(event) {
+        super();
+        this.#event = event;
+    }
+
+    connectedCallback() {
+        this.render();
+    }
+
+    render() {
+      this.innerHTML = this.template();
+
+      const participants = this.querySelector(".participants");
+
+      const firstThreeParticipants = this.#event.participants.slice(0, 3)
+      const remainingParticipants = this.#event.participants.slice(3)
+
+      const firstThreeIcons = firstThreeParticipants.map((participant) => this.participantIcon(participant)).join('')
+      console.log(firstThreeParticipants);
+      participants.innerHTML = firstThreeIcons;
+
+      if (remainingParticipants.length > 0) {
+          const span = document.createElement("span")
+          span.classList.add("pl-4", "text-lg")
+          span.innerText = `+${remainingParticipants.length} going`;
+          participants.appendChild(span)
+      }
+    }
+
+
+    participantIcon(participant) {
+        const initial = participant.name.charAt(0).toUpperCase()
+
+        return `
+            <span class="group w-7 h-7 bg-gray-300 rounded-full border-2 border-purple-300 -ml-2 first:ml-0 text-center">
+                <span>${initial}</span>
+                <div class="w-fit text-nowrap relative group-hover:opacity-100 -translate-y-full z-10 transition-opacity bg-purple-950 px-1 text-sm text-white rounded-md opacity-0 m-4">${participant.name}</div>
+            </span>    
+        `
+    }
+
+    // leading none
+    template() {
+        return `
+            <div class="mb-1 grid grid-cols-20 grid-rows-3 bg-light-purple rounded-2xl p-1">
+                <div class="aspect-square row-start-1 col-start-1 col-span-3 row-span-3 bg-purple-900 rounded-xl text-orange-400 font-bold justify-center items-center">
+                    <div class="flex flex-col items-center justify-center">
+                        <span class="text-2xl font-sigmar-one">${this.#event.datetime.toLocaleString(getLang(), { month: "short"}).toUpperCase()}</span>
+                        <span class="text-4xl leading-none font-sigmar-one">${this.#event.datetime.toLocaleString(getLang(), { day: "numeric" })}</span> 
+                    </div>
+                </div>
+                
+                <div class="pl-1 font-sigmar-one col-start-4 col-span-17 row-start-1 text-2xl">
+                  ${this.#event.title}
+                </div>
+            
+                <div class="pl-1 col-start-4 col-span-17 row-start-2">
+                  <span>📍 ${this.#event.location}</span>
+                  <span class="px-8"/>
+                  <span>🕒 ${this.#event.datetime.toLocaleTimeString(getLang())}</span>
+                </div>
+            
+                <div class="pl-1 col-start-4 col-span-17 row-start-3">
+                  <div class="participants flex">
+                  </div>
+                </div>
+            </div>
+        `
+    }
+}
+customElements.define("event-list-item", EventListItem);
 
 class EventItem extends HTMLElement {
 
@@ -32,17 +109,22 @@ class EventItem extends HTMLElement {
         });
     }
 
+    getDateString = (date) => {
+        const newDate = date ? new Date(date) : new Date();
+        return new Date(newDate.getTime() - newDate.getTimezoneOffset() * 60000).toISOString().slice(0, -1);
+    };
+
     render() {
         this.innerHTML = this.template();
-        const eventList = document.querySelector("event-list");
 
         const deleteButton = this.querySelector(`#delete-${this.#event.id}`)
         deleteButton.addEventListener("click", ()=> {
-           eventList.dispatchEvent(
+           this.dispatchEvent(
                 new CustomEvent("delete-event", {
+                    bubbles: true,
                     detail: {
                         eventId: this.#event.id
-                    }
+                    },
                 })
             )
         });
@@ -68,8 +150,9 @@ class EventItem extends HTMLElement {
         form.addEventListener("submit", (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
-            eventList.dispatchEvent(
+            this.dispatchEvent(
                 new CustomEvent("update-event", {
+                    bubbles: true,
                     detail: {
                         id: this.#event.id,
                         title: formData.get("title"),
@@ -80,22 +163,6 @@ class EventItem extends HTMLElement {
                     }
                 })
             );
-        });
-
-        const getDateString = (date) => {
-            const newDate = date ? new Date(date) : new Date();
-            return new Date(newDate.getTime() - newDate.getTimezoneOffset() * 60000).toISOString().slice(0, -1);
-        };
-
-        const prefilledValues = {
-            title: this.#event.title,
-            datetime: getDateString(this.#event.datetime),
-            location: this.#event.location,
-            description: this.#event.description,
-        }
-
-        Object.entries(prefilledValues).forEach(([name, value]) => {
-            form.elements.namedItem(name).value = value;
         });
 
        const select = document.createElement("select");
@@ -116,8 +183,9 @@ class EventItem extends HTMLElement {
             select.appendChild(option);
         })
         select.addEventListener("change", (e) => {
-            eventList.dispatchEvent(
+            this.dispatchEvent(
                 new CustomEvent("add-tag-to-event", {
+                    bubbles: true,
                     detail: {
                         id: this.#event.id,
                         tag: select.value
@@ -147,8 +215,9 @@ class EventItem extends HTMLElement {
             const element = pill.content
             const deleteButton = element.querySelector("button")
             deleteButton.addEventListener("click", (e) => {
-                eventList.dispatchEvent(
+                this.dispatchEvent(
                     new CustomEvent("remove-tag-from-event", {
+                        bubbles: true,
                         detail: {
                             id: this.#event.id,
                             tag: tag.id,
@@ -184,8 +253,9 @@ class EventItem extends HTMLElement {
         addParticipantButton.classList.add("bg-blue-500", "hover:bg-blue-700", "text-white", "font-bold", "py-2", "px-4", "rounded", "focus:outline-none", "focus:shadow-outline");
         addParticipantButton.textContent = "Add Participant";
         addParticipantButton.addEventListener("click", (e) => {
-            eventList.dispatchEvent(
+            this.dispatchEvent(
                 new CustomEvent("add-participant-to-event", {
+                    bubbles: true,
                     detail: {
                         id: this.#event.id,
                         participantId: participantSelect.value
@@ -205,8 +275,9 @@ class EventItem extends HTMLElement {
 
             const deleteButton = span.querySelector("button");
             deleteButton.addEventListener("click", (e) => {
-                eventList.dispatchEvent(
+                this.dispatchEvent(
                     new CustomEvent("remove-participant-from-event", {
+                        bubbles: true,
                         detail: {
                             id: this.#event.id,
                             participantId: participant.id,
@@ -242,7 +313,7 @@ class EventItem extends HTMLElement {
         const eventId = this.#event.id;
 
         return `
-            <div class="border px-4 py-4 backdrop-grayscale-25">
+            <div class="border px-4 py-4 bg-light-purple">
                 <div id="event-info-${eventId}">
                     <span><span class="text-2xl">${this.#event.title} - ${this.#event.status.description}</span> <span class="text-sm">(${eventId})</span></span>
                     ${this.icon()}
@@ -267,16 +338,16 @@ class EventItem extends HTMLElement {
                 <div id="edit-event-${eventId}">
                     <form id="edit-event-form-${this.#event.id}" action="#">
                         <label for="title" class="mb-2" >Title:</label><br>
-                        <input id="title" name="title" type="text" class="border shadow py-2 mb-3" required><br>
+                        <input value="${this.#event.title}" id="title" name="title" type="text" class="border shadow py-2 mb-3" required><br>
                 
                         <label for="datetime" class="mb-2" >Date:</label><br>
-                        <input id="datetime" name="datetime" type="datetime-local" class="border shadow py-2 mb-3" required><br>
+                        <input value="${this.getDateString(this.#event.datetime)}" id="datetime" name="datetime" type="datetime-local" class="border shadow py-2 mb-3" required><br>
                 
                         <label for="location" class="mb-2" >Location:</label><br>
-                        <input id="location" name="location" type="text" class="border shadow py-2 mb-3" required><br>
+                        <input value="${this.#event.location}" id="location" name="location" type="text" class="border shadow py-2 mb-3" required><br>
                 
                         <label for="description" class=mb-2" >Event Description:</label><br>
-                        <input id="description" name="description" type="text" class="border shadow py-2 mb-3" required><br>
+                        <input value="${this.#event.description}" id="description" name="description" type="text" class="border shadow py-2 mb-3" required><br>
                 
                         <label for="image" class="mb-2" >Event Banner (png or jpeg):</label><br>
                         <input id="image" name="image" type="file" accept="image/png, image/jpeg" class="border shadow py-2 mb-3" ><br>
@@ -328,8 +399,12 @@ class EventList extends HTMLElement {
     render() {
         this.innerHTML = "";
         this.appendChild(this.header().content); // no need to clone, only used once
+
+        const list = this.querySelector("div.event-list");
+        const list2 = this.querySelector("div.event-list2");
         this.#events.map(event => {
-            this.appendChild(new EventItem(event, this.#availableTags, this.#availableParticipants))
+            list.appendChild(new EventListItem(event));
+            list2.appendChild(new EventItem(event, this.#availableTags, this.#availableParticipants))
         });
     }
 
@@ -337,6 +412,13 @@ class EventList extends HTMLElement {
         const header = document.createElement("template");
         header.innerHTML = `
             <h1 class="text-3xl text-amber-600">Event List:</h1>
+            <div class="event-list px-1">
+            
+            </div>
+            <hr class="py-12">
+            <div class="event-list2">
+            
+            </div>
         `;
 
         return header;

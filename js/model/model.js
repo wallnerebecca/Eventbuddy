@@ -28,14 +28,28 @@ class EventBuddyModel extends EventTarget {
         data.users.forEach(user => this.addUser(user))
         data.tags.forEach(tag => this.addTag(tag))
         data.participants.forEach(participant => this.addParticipant(participant.name, participant.email))
-        data.events.forEach(event => this.#addEvent(
-            event.name,
-            new Date(event.datetime),
-            event.location,
-            event.description,
-            undefined,
-            this.#users.find(user => user.email === event.createdBy)
-        ))
+        data.events.forEach(event => {
+            const eventId = this.#addEvent(
+                event.name,
+                new Date(event.datetime),
+                event.location,
+                event.description,
+                undefined,
+                this.#users.find(user => user.email === event.createdBy),
+            )
+
+            event.participants.forEach(participantEmail => {
+                const participant = this.#participants.values().toArray().find(p => p.email === participantEmail)
+
+                this.addParticipantToEvent(eventId, participant.id)
+            })
+
+            event.tags.forEach(tagName => {
+                const tag = this.#tags.values().toArray().find(t => t.name === tagName)
+
+                this.addTagToEvent(eventId, tag.id)
+            })
+        })
     }
     addUser({username, email}) {
         this.#users.push(new User(username, email));
@@ -84,6 +98,7 @@ class EventBuddyModel extends EventTarget {
         console.log(`Adding event ${event.id}: ${event.title}`);
         this.#events.set(event.id, event);
         this.sendEventListChangedEvent();
+        return event.id;
     }
 
     addEvent(title,

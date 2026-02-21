@@ -2,7 +2,8 @@
   "name": "eventbuddy",
   "private": true,
   "scripts": {
-    "dev": "npx @tailwindcss/cli -i ./styles/main.css -o ./styles/output.css --watch"
+    "dev": "npx @tailwindcss/cli -i ./styles/main.css -o ./styles/output.css --watch",
+    "init": "npx tailwindcss init"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.1.18",
