@@ -57,17 +57,17 @@ class EventListItem extends HTMLElement {
                     </div>
                 </div>
                 
-                <div class="pl-1 font-sigmar-one col-start-4 col-span-17 row-start-1 text-2xl">
+                <div class="pl-1 font-sigmar-one col-start-4 col-span-17 row-start-1 text-2xl text-purple-900">
                   ${this.#event.title}
                 </div>
             
-                <div class="pl-1 col-start-4 col-span-17 row-start-2">
-                  <span>📍 ${this.#event.location}</span>
-                  <span class="px-8"/>
-                  <span>🕒 ${this.#event.datetime.toLocaleTimeString(getLang())}</span>
+                <div class="pl-1 font-open-sans col-start-4 col-span-17 row-start-2 text-white text-xl">
+                  <span><span class="material-symbols-rounded">location_on</span>${this.#event.location}</span>
+                  <span class="px-2"/>
+                  <span><span class="material-symbols-rounded">schedule</span> ${this.#event.datetime.toLocaleTimeString(getLang())}</span>
                 </div>
             
-                <div class="pl-1 col-start-4 col-span-17 row-start-3">
+                <div class="pl-1 font-open-sans col-start-4 col-span-17 row-start-3 text-white">
                   <div class="participants flex">
                   </div>
                 </div>
@@ -411,13 +411,9 @@ class EventList extends HTMLElement {
     header() {
         const header = document.createElement("template");
         header.innerHTML = `
-            <h1 class="text-3xl text-amber-600">Event List:</h1>
-            <div class="event-list px-1">
-            
+            <div class="event-list px-1 max-w-full sm:max-w-1/2 md:max-w-sm">
             </div>
-            <hr class="py-12">
-            <div class="event-list2">
-            
+            <div class="event-list2 hidden">
             </div>
         `;
 

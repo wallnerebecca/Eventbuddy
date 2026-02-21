@@ -21,6 +21,7 @@ class Controller {
         document.querySelector("filter-bar").addEventListener("update-status-filter", this.handleUpdateStatusFilter);
         document.querySelector("filter-bar").addEventListener("update-tags-filter", this.handleUpdateTagsFilter);
         document.querySelector("filter-bar").addEventListener("update-participants-filter", this.handleUpdateParticipantsFilter);
+        document.querySelector("filter-bar").addEventListener("update-search", this.handleUpdateSearch);
 
         document.querySelector("tag-list").addEventListener("add-tag", this.handleAddTag)
         document.querySelector("tag-list").addEventListener("delete-tag", this.handleDeleteTag)
@@ -79,6 +80,10 @@ class Controller {
 
     handleUpdateParticipantsFilter = (e) => {
         model.updateParticipantFilters(e.detail.selectedOptions);
+    }
+
+    handleUpdateSearch = (e) => {
+        model.updateSearchFilter(e.detail.searchInput.trim())
     }
 
     /* TAG MANAGEMENT */

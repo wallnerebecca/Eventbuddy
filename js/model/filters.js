@@ -7,7 +7,7 @@ export default class Filters {
     }
 
     getFilterValues(key) {
-        return this.#filters.get(key) || [];
+        return this.#filters.get(key);
     }
 
     setFilterValues(key, values) {

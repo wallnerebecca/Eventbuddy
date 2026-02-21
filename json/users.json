@@ -12,7 +12,11 @@
   "tags": [
     "Pool",
     "Beach",
-    "Party"
+    "Party",
+    "Music",
+    "BBQ",
+    "Night",
+    "Outdoor"
   ],
   "participants": [
     {
@@ -34,6 +38,26 @@
     {
       "name": "Hans Zimmer",
       "email": "hans@zimmer"
+    },
+    {
+      "name": "Laura Schmidt",
+      "email": "laura@schmidt"
+    },
+    {
+      "name": "Daniel Fischer",
+      "email": "daniel@fischer"
+    },
+    {
+      "name": "Mia Gruber",
+      "email": "mia@gruber"
+    },
+    {
+      "name": "Jonas Leitner",
+      "email": "jonas@leitner"
+    },
+    {
+      "name": "Emma Bauer",
+      "email": "emma@bauer"
     }
   ],
   "events": [
@@ -68,6 +92,60 @@
       ],
       "tags": [
         "Beach",
+        "Party"
+      ]
+    },
+    {
+      "name": "BBQ Night",
+      "datetime": "2026-03-05T18:00",
+      "location": "Linz Riverside",
+      "description": "Chill BBQ evening with friends and music",
+      "createdBy": "brushy@brushy",
+      "participants": [
+        "rebecca@wallner",
+        "daniel@fischer",
+        "mia@gruber",
+        "jonas@leitner"
+      ],
+      "tags": [
+        "BBQ",
+        "Music",
+        "Outdoor"
+      ]
+    },
+    {
+      "name": "Summer Kickoff",
+      "datetime": "2026-06-01T19:30",
+      "location": "Stadl-Paura Garden",
+      "description": "Start of summer celebration with games and drinks",
+      "createdBy": "becii@becii",
+      "participants": [
+        "simon@wallner",
+        "sophie@wallner",
+        "emma@bauer",
+        "laura@schmidt",
+        "hans@zimmer"
+      ],
+      "tags": [
+        "Party",
+        "Outdoor",
+        "Music"
+      ]
+    },
+    {
+      "name": "Night Chill Meetup",
+      "datetime": "2026-04-12T21:15",
+      "location": "City Rooftop",
+      "description": "Relaxed nighttime hangout with skyline view",
+      "createdBy": "brushy@brushy",
+      "participants": [
+        "rodney@bixerman",
+        "mia@gruber",
+        "jonas@leitner",
+        "emma@bauer"
+      ],
+      "tags": [
+        "Night",
         "Party"
       ]
     }

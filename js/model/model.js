@@ -138,14 +138,14 @@ class EventBuddyModel extends EventTarget {
                 .values()
                 .toArray()
                 .filter(event => {
-                    const selectedStatuses = this.#filters.getFilterValues("status");
+                    const selectedStatuses = this.#filters.getFilterValues("status") || [];
                     if(selectedStatuses.length > 0) {
                         return selectedStatuses.includes(event.status.description);
                     }
                     return true;
                 })
                 .filter(event => {
-                    const selectedTagIds = this.#filters.getFilterValues("tag");
+                    const selectedTagIds = this.#filters.getFilterValues("tag") || [];
                     console.log(selectedTagIds);
                     if(selectedTagIds.length > 0) {
                         const eventTagIds = event.tags.keys().toArray();
@@ -158,7 +158,7 @@ class EventBuddyModel extends EventTarget {
                     return true;
                 })
                 .filter(event => {
-                    const selectedParticipantIds = this.#filters.getFilterValues("participant");
+                    const selectedParticipantIds = this.#filters.getFilterValues("participant") || [];
                     console.log(selectedParticipantIds);
 
                     if(selectedParticipantIds.length > 0) {
@@ -168,6 +168,16 @@ class EventBuddyModel extends EventTarget {
                         const intersection = eventParticipantIds.filter(tag => selectedParticipantIds.includes(tag))
 
                         return intersection.length > 0;
+                    }
+
+                    return true;
+                })
+                .filter(event => {
+                    const searchFilter = this.#filters.getFilterValues("search") || ''
+                    console.log(searchFilter)
+
+                    if (searchFilter) {
+                        return event.title.toLowerCase().includes(searchFilter.toLowerCase());
                     }
 
                     return true;
@@ -201,6 +211,12 @@ class EventBuddyModel extends EventTarget {
         this.sendEventListChangedEvent();
     }
 
+    updateSearchFilter(searchInput) {
+        console.log(`Updating search filter with ${JSON.stringify(searchInput)} searchInput`);
+
+        this.#filters.setFilterValues("search", searchInput);
+        this.sendEventListChangedEvent();
+    }
     // Participant
     addParticipant(
         name,
