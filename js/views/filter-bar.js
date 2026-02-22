@@ -26,48 +26,15 @@ class FilterBar extends HTMLElement {
     render() {
         this.innerHTML = this.template();
 
-        const statusFilter = this.querySelector("#status")
-        statusFilter.onchange = (e) => {
-            const selectedOptions = Array.from(statusFilter.selectedOptions).map((option) => option.value)
-            this.dispatchEvent(
-                new CustomEvent("update-status-filter", {
-                    detail: {
-                        selectedOptions: selectedOptions,
-                    }
-                })
-            );
-        }
-
         this.updateTagFilter()
-        const tagFilter = this.querySelector("#tag");
-        tagFilter.onchange = (e) => {
-            const selectedOptions = Array.from(tagFilter.selectedOptions).map((option) => option.value)
-            this.dispatchEvent(
-                new CustomEvent("update-tags-filter", {
-                    detail: {
-                        selectedOptions: selectedOptions,
-                    }
-                })
-            );
-        }
-
         this.updateParticipantFilter()
-        const participantFilter = this.querySelector("#participant");
-        participantFilter.onchange = (e) => {
-            const selectedOptions = Array.from(participantFilter.selectedOptions).map((option) => option.value)
-            this.dispatchEvent(
-                new CustomEvent("update-participants-filter", {
-                    detail: {
-                        selectedOptions: selectedOptions,
-                    }
-                })
-            )
-        }
+        this.updateStatusFilter()
 
-        const resetFilterButton = this.querySelector("button");
+        const resetFilterButton = this.querySelector("#reset-filters-button");
         resetFilterButton.addEventListener("click", (e) => {
             this.dispatchEvent(
                 new CustomEvent("update-participants-filter", {
+                    bubbles: true,
                     detail: {
                         selectedOptions: [],
                     }
@@ -75,6 +42,7 @@ class FilterBar extends HTMLElement {
             )
             this.dispatchEvent(
                 new CustomEvent("update-tags-filter", {
+                    bubbles: true,
                     detail: {
                         selectedOptions: [],
                     }
@@ -82,6 +50,7 @@ class FilterBar extends HTMLElement {
             )
             this.dispatchEvent(
                 new CustomEvent("update-status-filter", {
+                    bubbles: true,
                     detail: {
                         selectedOptions: [],
                     }
@@ -99,7 +68,7 @@ class FilterBar extends HTMLElement {
         })
 
         const search = this.querySelector("input.search");
-        console.log(search)
+
         search.addEventListener("input", (e) => {
             this.dispatchEvent(
                 new CustomEvent("update-search", {
@@ -126,21 +95,24 @@ class FilterBar extends HTMLElement {
                 modalContainer.classList.add("hidden")
             }
         })
+
+        const closeFilterModalButton = this.querySelector("#close-filter-modal-button");
+        closeFilterModalButton.addEventListener("click", (e) => {
+            modalContainer.classList.remove("block")
+            modalContainer.classList.add("hidden")
+
+
+            const searchTags = this.querySelector("input.search-tags");
+            searchTags.value = '';
+            this.searchTagList('')
+
+            const searchParticipants = this.querySelector("input.search-participants");
+            searchParticipants.value = '';
+            this.searchParticipantList('')
+        })
     }
 
     updateTagFilter() {
-        const select = this.querySelector("#tag")
-        select.value = "";
-        select.innerHTML = "";
-
-        this.#tags.map((tag) => {
-            const option = document.createElement("option");
-            option.value = tag.id;
-            option.text = tag.name;
-
-            select.appendChild(option)
-        });
-
         const searchTagList = this.querySelector("#search-tag-list");
 
         const search = this.querySelector("input.search-tags");
@@ -197,33 +169,122 @@ class FilterBar extends HTMLElement {
         );
 
     }
-    updateParticipantFilter() {
-        const select = this.querySelector("#participant");
-        select.value = "";
-        select.innerHTML = "";
 
-        this.#participants.map((participant) => {
-            const option = document.createElement("option");
-            option.value = participant.id;
-            option.text = `${participant.name} (${participant.email})`;
-            select.appendChild(option)
+    updateParticipantFilter() {
+        const searchParticipantList = this.querySelector("#search-participant-list");
+
+        const search = this.querySelector("input.search-participants");
+        search.addEventListener("input", (e) => {
+            this.searchParticipantList(search.value)
         })
 
-        // this.dispatchEvent(
-        //     new CustomEvent("update-participants-filter", {
-        //         detail: {
-        //             selectedOptions: select.selectedOptions,
-        //         }
-        //     })
-        // )
+        this.#participants.map((participant) => {
+            const element = this.dropDownElement(participant)
+
+            const checkBox = element.querySelector("input");
+            checkBox.addEventListener("change", (e) => {
+                this.sendUpdatedParticipantFilter()
+            })
+            searchParticipantList.appendChild(element)
+        })
+    }
+
+    searchParticipantList(name) {
+        const searchParticipantList = this.querySelector("#search-participant-list");
+
+        for (const participant of searchParticipantList.children) {
+            if (participant.getAttribute("data-name").toLowerCase().includes(name.toLowerCase())) {
+                participant.classList.remove("hidden");
+                participant.classList.add("block")
+            } else {
+                participant.classList.remove("block")
+                participant.classList.add("hidden");
+            }
+        }
+    }
+
+    sendUpdatedParticipantFilter() {
+        const searchParticipantList = this.querySelector("#search-participant-list");
+
+        const selectedOptions = []
+        for (const tag of searchParticipantList.children) {
+            const checkBox = tag.querySelector("input")
+
+            const participantId = checkBox.getAttribute("data-id");
+            const checked = checkBox.checked;
+
+            if (checked) {
+                selectedOptions.push(participantId);
+            }
+        }
+
+        this.dispatchEvent(
+            new CustomEvent("update-participants-filter", {
+                detail: {
+                    selectedOptions: selectedOptions,
+                }
+            })
+        );
 
     }
 
+    updateStatusFilter() {
+        const statusPlanned = this.querySelector("#status-planned");
+        statusPlanned.checked = false;
 
+        statusPlanned.addEventListener("click", (e) => {
+            if (statusPlanned.checked) {
+                statusPlanned.checked = false;
+                statusPlanned.classList.remove("font-bold", "border-green-400");
+                statusPlanned.classList.add("border-green-200");
+            } else {
+                statusPlanned.checked = true
+                statusPlanned.classList.remove("border-green-200");
+                statusPlanned.classList.add("font-bold", "border-green-400");
+            }
+            this.sendUpdatedStatusFilter()
+        })
+
+        const statusCompleted = this.querySelector("#status-completed");
+        statusCompleted.checked = false;
+
+        statusCompleted.addEventListener("click", (e) => {
+            if (statusCompleted.checked) {
+                statusCompleted.checked = false;
+                statusCompleted.classList.remove("font-bold", "border-orange-400");
+                statusCompleted.classList.add("border-orange-300");
+            } else {
+                statusCompleted.checked = true;
+                statusCompleted.classList.remove("border-orange-300");
+                statusCompleted.classList.add("font-bold", "border-orange-400");
+            }
+            this.sendUpdatedStatusFilter()
+        })
+    }
+
+    sendUpdatedStatusFilter() {
+        const statusFilters = this.querySelector("#status-filters");
+
+        const selectedOptions = []
+        for (const status of statusFilters.children) {
+            if (status.checked) {
+                selectedOptions.push(status.getAttribute("data-value"));
+            }
+        }
+
+        this.dispatchEvent(
+            new CustomEvent("update-status-filter", {
+                detail: {
+                    selectedOptions: selectedOptions,
+                }
+            })
+        );
+
+    }
     dropDownElement(tag) {
         const template = document.createElement("template")
         template.innerHTML = `
-            <div class="block px-4 py-2 hover:bg-rose-200 hover:text-rose-500 cursor-pointer w-full" data-name="${tag.name}">
+            <div class="block px-4 py-2 hover:bg-light-purple/30 cursor-pointer w-full" data-name="${tag.name}">
                 <div class="flex items-center gap-2"><input type="checkbox" class="w-6 h-6 rounded shrink-0" data-id="${tag.id}"><span class="truncate text-3xl">${tag.name}</span></div>
             </div>
         `;
@@ -233,62 +294,56 @@ class FilterBar extends HTMLElement {
 
     template() {
         return `            
-            <div class="px-1 py-1 max-w-full sm:max-w-1/2 md:max-w-sm relative flex pt-10 pb-5">
-                <div class="block w-7/8 pr-2">
+            <div class="px-1 py-1 relative flex pt-10 pb-5">
+                <div class="relative block w-7/8 pr-2">
                     <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                        <svg class="w-4 h-4 text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></svg>
+                        <span class="material-symbols-rounded text-5xl!">search</span>
                     </div>
-                    <input type="search" class="search h-full w-full p-3 ps-9 bg-light-purple/50 rounded-full text-2xl focus:outline-none text-orange-400 placeholder:text-orange-400 [&::-webkit-search-cancel-button]:appearance-none" placeholder="Discover events"/>
+                    <input type="search" class="search h-full w-full p-3 ps-15 bg-light-purple/50 rounded-full text-2xl focus:outline-none text-orange-400 placeholder:text-orange-400 [&::-webkit-search-cancel-button]:appearance-none" placeholder="Discover events"/>
                 </div>
                 <div id="open-filter-modal" class="max-w-1/8 aspect-square w-1/4 bg-light-purple/50 rounded-full text-2xl flex justify-center items-center"><span class="material-symbols-rounded font-bold! text-5xl!">filter_list</span></div>
             </div>
             <div id="modal-container" class="hidden">
-            <div id="tag-filter-modal" class="absolute left-0 top-0 w-screen h-screen bg-black/50 z-50 sm:flex sm:justify-center pt-30 sm:pb-20">
-                <div class="rounded-t-4xl max-w-xl w-full h-full bg-orange-200 sm:rounded-b-4xl p-8 flex flex-col items-center">
-                    <hr class="w-6/10 h-1 mb-2 bg-purple-950">
-                    <span class="text-5xl font-sigmar-one text-purple-950">Filters</span>
-                    
-                   <div class="relative block w-7/8">
-                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                            <span class="material-symbols-rounded text-5xl!">search</span>
+                <div id="tag-filter-modal" class="absolute left-0 top-0 w-screen text-purple-950 h-screen bg-black/50 z-50 sm:flex sm:justify-center pt-30 sm:pb-20">
+                    <div class="rounded-t-4xl max-w-xl w-full h-full bg-[#FFD6A7] sm:rounded-b-4xl p-8 flex flex-col items-center">
+                        <hr class="w-6/10 h-1 mb-2 bg-purple-950">
+                        <span class="text-5xl font-sigmar-one pb-8">Filters</span>
+                        
+                        <div class="pb-8 w-7/8">
+                        <div class="relative block w-full">
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <span class="material-symbols-rounded text-5xl!">search</span>
+                            </div>
+                            <input type="search" class="search-tags h-full w-full p-3 ps-15 bg-light-purple/50 rounded-t-4xl rounded-b-none text-2xl focus:outline-none placeholder:text-purple-950 [&::-webkit-search-cancel-button]:appearance-none" placeholder="Discover Tags..."/>
                         </div>
-                        <input type="search" class="search-tags h-full w-full p-3 ps-15 bg-light-purple/50 rounded-t-4xl rounded-b-none text-2xl focus:outline-none text-orange-400 placeholder:text-orange-400 [&::-webkit-search-cancel-button]:appearance-none" placeholder="Discover Tags"/>
-                    </div>
-                   <div id="search-tag-list" class="h-50 overflow-y-auto w-7/8 bg-light-purple/50 rounded-b-4xl [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-rose-100 [&::-webkit-scrollbar-thumb]:bg-rose-300">
-                   </div>
-                   
-                   
-                   
-                   <div class="hidden">
-                    <label for="tags">Tags</label>
-                    <select id="tag" name="tag" size="6" multiple>
-                    </select>
-                    </div>
-                    
-                    <div class="relative block w-7/8 pr-2">
-                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                            <span class="material-symbols-rounded text-5xl!">search</span>
+                        <div id="search-tag-list" class="h-50 overflow-y-auto w-full bg-light-purple/50 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300">
                         </div>
-                        <input type="search" class="search-participants h-full w-full p-3 ps-15 bg-light-purple/50 rounded-full text-2xl focus:outline-none text-orange-400 placeholder:text-orange-400 [&::-webkit-search-cancel-button]:appearance-none" placeholder="Find Participants"/>
+                        <div class="w-full rounded-b-4xl h-8 bg-light-purple/50"></div>
+                        </div>
+                        
+                        <div class="pb-8 w-7/8">
+                        <div class="relative block w-full">
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <span class="material-symbols-rounded text-5xl!">search</span>
+                            </div>
+                            <input type="search" class="search-participants h-full w-full p-3 ps-15 bg-light-purple/50 rounded-t-4xl rounded-b-none text-2xl focus:outline-none  placeholder:text-purple-950 [&::-webkit-search-cancel-button]:appearance-none" placeholder="Find Participants..."/>
+                        </div>
+                        <div id="search-participant-list" class="h-50 overflow-y-auto w-full bg-light-purple/50 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300">
+                        </div>
+                        <div class="w-full rounded-b-4xl h-8 bg-light-purple/50"></div>
+                        </div>
+                       
+                        <div id="status-filters" class="pb-8 w-7/8 flex">
+                            <div data-value="planned" id="status-planned" class="w-1/2 h-15 text-center rounded-l-full border-4 border-solid border-green-200 bg-green-200 flex items-center justify-center text-2xl">Planned</div><div data-value="completed" id="status-completed" class="w-1/2 h-15 text-center rounded-r-full border-4 border-solid border-orange-300  bg-orange-300  flex items-center justify-center text-2xl">Completed</div>
+                        </div>
+                            
+                        <div class="w-7/8 flex justify-between">
+                            <button id="reset-filters-button" class="aspect-square p-2 bg-light-purple/50 rounded-full flex justify-center items-center"><span class="material-symbols-rounded font-bold! text-5xl!">filter_list_off</span></button>
+                            <button id="close-filter-modal-button" class="p-2 pl-4 pr-4 bg-purple-950 text-orange-400 rounded-full flex justify-center items-center"><span class="font-sigmar-one text-2xl">Back</span></button>
+                        </div>    
+                        
                     </div>
-                    <label for="participant">Participant</label>
-                    <select id="participant" name="participant" size="6" multiple>
-                    </select>
-                    
-                    
-                    <label for="status">Status</label>
-                    <select id="status" name="status" size="1" multiple>
-                        <option value="planned">Planned</option>
-                        <option value="completed">Completed</option>
-                    </select>
-                    
-                    <label for="participant">Participant</label>
-                    <select id="participant" name="participant" size="1" multiple>
-                    </select>
-                    
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Reset filters</button>
                 </div>
-            </div>
             </div>
         `;
     }

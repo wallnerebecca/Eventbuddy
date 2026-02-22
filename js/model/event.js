@@ -101,6 +101,16 @@ export default class Event {
         this.#tags.delete(tag.id);
     }
 
+    removeAllTags() {
+        this.#tags = new Map();
+    }
+
+    addTags(tags) {
+        tags.forEach((tag) => {
+            this.#tags.set(tag.id, tag);
+        })
+    }
+
     get participants() {
         return this.#participants.values().toArray();
     }
@@ -111,6 +121,16 @@ export default class Event {
 
     removeParticipant(participant) {
         this.#participants.delete(participant.id);
+    }
+
+    removeAllParticipants() {
+        this.#participants = new Map();
+    }
+
+    addParticipants(participants) {
+        participants.forEach((participant) => {
+            this.#participants.set(participant.id, participant);
+        })
     }
 }
 

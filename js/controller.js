@@ -11,10 +11,12 @@ class Controller {
 
         document.querySelector("event-management").addEventListener("add-event", this.handleAddEvent);
 
-        document.querySelector("event-list").addEventListener("update-event", this.handleUpdateEvent);
-        document.querySelector("event-list").addEventListener("delete-event", this.handleDeleteEvent);
+        document.querySelector("detailed-event-view").addEventListener("update-event", this.handleUpdateEvent);
+        document.querySelector("detailed-event-view").addEventListener("delete-event", this.handleDeleteEvent);
+
         document.querySelector("event-list").addEventListener("add-tag-to-event", this.handleAddTagToEvent);
         document.querySelector("event-list").addEventListener("remove-tag-from-event", this.handleRemoveTagFromEvent);
+
         document.querySelector("event-list").addEventListener("add-participant-to-event", this.handleAddParticipantToEvent)
         document.querySelector("event-list").addEventListener("remove-participant-from-event", this.handleRemoveParticipantFromEvent)
 
@@ -22,6 +24,8 @@ class Controller {
         document.querySelector("filter-bar").addEventListener("update-tags-filter", this.handleUpdateTagsFilter);
         document.querySelector("filter-bar").addEventListener("update-participants-filter", this.handleUpdateParticipantsFilter);
         document.querySelector("filter-bar").addEventListener("update-search", this.handleUpdateSearch);
+
+        document.querySelector("detailed-event-view").addEventListener("update-event-participants", this.handleUpdateEventParticipants);
 
         document.querySelector("tag-list").addEventListener("add-tag", this.handleAddTag)
         document.querySelector("tag-list").addEventListener("delete-tag", this.handleDeleteTag)
@@ -31,26 +35,24 @@ class Controller {
         document.querySelector("participant-list").addEventListener("edit-participant", this.handleEditParticipant)
 
         document.querySelector("user-view").addEventListener("user-login", this.handleUserLogin);
-        document.querySelector("user-view").addEventListener("user-logout", this.handleUserLogout);
+        document.querySelector("user-view").addEventListener("user-logout", this.handleUserLogout)
+
     }
 
 
 
     /* EVENT MANAGEMENT */
     handleAddEvent = (e) => {
-        model.addEvent(e.detail.title, e.detail.datetime, e.detail.location, e.detail.description, e.detail.icon);
+        model.addEvent(e.detail.title, e.detail.datetime, e.detail.location, e.detail.description, e.detail.icon, e.detail.tagIds);
     }
 
     handleUpdateEvent = (e) => {
-        model.updateEvent(e.detail.id, e.detail.title, e.detail.datetime, e.detail.location, e.detail.description, e.detail.icon);
+        console.log("Updating event ")
+        model.updateEvent(e.detail.id, e.detail.title, e.detail.datetime, e.detail.location, e.detail.description, e.detail.icon, e.detail.tagIds);
     }
 
     handleDeleteEvent = (e) => {
-        const confirmation = confirm("Are you sure you want to delete the event?")
-
-        if (confirmation) {
-            model.deleteEvent(e.detail.eventId)
-        }
+        model.deleteEvent(e.detail.eventId)
     }
 
     handleAddTagToEvent = (e) => {
@@ -69,6 +71,9 @@ class Controller {
        model.removeParticipantFromEvent(e.detail.id, e.detail.participantId)
     }
 
+    handleUpdateEventParticipants = (e) => {
+        model.updateEventParticipants(e.detail.eventId, e.detail.participantIds);
+    }
     /* FILTER BAR */
     handleUpdateStatusFilter = (e) => {
         model.updateStatusFilters(e.detail.selectedOptions);

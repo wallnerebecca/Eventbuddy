@@ -23,7 +23,7 @@ class EventListItem extends HTMLElement {
       const remainingParticipants = this.#event.participants.slice(3)
 
       const firstThreeIcons = firstThreeParticipants.map((participant) => this.participantIcon(participant)).join('')
-      console.log(firstThreeParticipants);
+
       participants.innerHTML = firstThreeIcons;
 
       if (remainingParticipants.length > 0) {
@@ -46,18 +46,17 @@ class EventListItem extends HTMLElement {
         `
     }
 
-    // leading none
     template() {
         return `
             <div class="mb-1 grid grid-cols-20 grid-rows-3 bg-light-purple rounded-2xl p-1">
-                <div class="aspect-square row-start-1 col-start-1 col-span-3 row-span-3 bg-purple-900 rounded-xl text-orange-400 font-bold justify-center items-center">
+                <div class="aspect-square row-start-1 col-start-1 col-span-3 row-span-3 bg-purple-950 rounded-xl text-orange-400 font-bold justify-center items-center">
                     <div class="flex flex-col items-center justify-center">
                         <span class="text-2xl font-sigmar-one">${this.#event.datetime.toLocaleString(getLang(), { month: "short"}).toUpperCase()}</span>
                         <span class="text-4xl leading-none font-sigmar-one">${this.#event.datetime.toLocaleString(getLang(), { day: "numeric" })}</span> 
                     </div>
                 </div>
                 
-                <div class="pl-1 font-sigmar-one col-start-4 col-span-17 row-start-1 text-2xl text-purple-900">
+                <div class="pl-1 font-sigmar-one col-start-4 col-span-17 row-start-1 text-2xl text-purple-950">
                   ${this.#event.title}
                 </div>
             
@@ -364,7 +363,6 @@ class EventItem extends HTMLElement {
     }
 
 }
-
 customElements.define('event-item', EventItem)
 
 class EventList extends HTMLElement {
@@ -403,17 +401,24 @@ class EventList extends HTMLElement {
         const list = this.querySelector("div.event-list");
         const list2 = this.querySelector("div.event-list2");
         this.#events.map(event => {
-            list.appendChild(new EventListItem(event));
-            list2.appendChild(new EventItem(event, this.#availableTags, this.#availableParticipants))
+            const eventListItem = new EventListItem(event);
+            eventListItem.addEventListener("click", (e) => {
+                this.dispatchEvent(
+                    new CustomEvent("active-event-changed", {
+                        detail: {
+                            id: event.id
+                        }
+                    })
+                )
+            })
+            list.appendChild(eventListItem);
         });
     }
 
     header() {
         const header = document.createElement("template");
         header.innerHTML = `
-            <div class="event-list px-1 max-w-full sm:max-w-1/2 md:max-w-sm">
-            </div>
-            <div class="event-list2 hidden">
+            <div class="event-list px-1">
             </div>
         `;
 

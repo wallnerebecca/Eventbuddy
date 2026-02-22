@@ -36,6 +36,7 @@ class EventBuddyModel extends EventTarget {
                 event.description,
                 undefined,
                 this.#users.find(user => user.email === event.createdBy),
+                []
             )
 
             event.participants.forEach(participantEmail => {
@@ -87,7 +88,8 @@ class EventBuddyModel extends EventTarget {
               location,
               description,
               icon,
-              createdBy) {
+              createdBy,
+              tagIds) {
         const event = new Event(title,
             datetime,
             location,
@@ -96,7 +98,9 @@ class EventBuddyModel extends EventTarget {
             createdBy
         )
         console.log(`Adding event ${event.id}: ${event.title}`);
+        event.addTags(tagIds.map(t => this.#tags.get(t)))
         this.#events.set(event.id, event);
+
         this.sendEventListChangedEvent();
         return event.id;
     }
@@ -105,8 +109,9 @@ class EventBuddyModel extends EventTarget {
              datetime,
              location,
              description,
-             icon) {
-        this.#addEvent(title, datetime, location, description, icon, this.#activeUser)
+             icon,
+             tagIds) {
+        this.#addEvent(title, datetime, location, description, icon, this.#activeUser, tagIds)
     }
 
     updateEvent(id,
@@ -114,7 +119,8 @@ class EventBuddyModel extends EventTarget {
                 datetime,
                 location,
                 description,
-                icon) {
+                icon,
+                tags) {
         console.log(`Updating event ${id}`);
         const event = this.#events.get(id);
         event.title = title;
@@ -122,6 +128,10 @@ class EventBuddyModel extends EventTarget {
         event.location = location;
         event.description = description;
         event.icon = icon;
+
+        event.removeAllTags();
+        event.addTags(tags.map(t => this.#tags.get(t)));
+
         this.sendEventListChangedEvent();
     }
 
@@ -146,10 +156,10 @@ class EventBuddyModel extends EventTarget {
                 })
                 .filter(event => {
                     const selectedTagIds = this.#filters.getFilterValues("tag") || [];
-                    console.log(selectedTagIds);
+
                     if(selectedTagIds.length > 0) {
                         const eventTagIds = event.tags.keys().toArray();
-                        console.log(eventTagIds)
+
                         const intersection = eventTagIds.filter(tag => selectedTagIds.includes(tag))
 
                         return intersection.length > 0;
@@ -159,11 +169,11 @@ class EventBuddyModel extends EventTarget {
                 })
                 .filter(event => {
                     const selectedParticipantIds = this.#filters.getFilterValues("participant") || [];
-                    console.log(selectedParticipantIds);
+
 
                     if(selectedParticipantIds.length > 0) {
                         const eventParticipantIds = event.participants.map(participant => participant.id)
-                        console.log(eventParticipantIds);
+
 
                         const intersection = eventParticipantIds.filter(tag => selectedParticipantIds.includes(tag))
 
@@ -174,7 +184,7 @@ class EventBuddyModel extends EventTarget {
                 })
                 .filter(event => {
                     const searchFilter = this.#filters.getFilterValues("search") || ''
-                    console.log(searchFilter)
+
 
                     if (searchFilter) {
                         return event.title.toLowerCase().includes(searchFilter.toLowerCase());
@@ -265,6 +275,16 @@ class EventBuddyModel extends EventTarget {
         }
     }
 
+    updateEventParticipants(eventId, participantIds) {
+        const participants = participantIds.map(id => this.#participants.get(id))
+        const event = this.#events.get(eventId)
+
+        if (event) {
+            event.removeAllParticipants();
+            event.addParticipants(participants);
+            this.sendEventListChangedEvent()
+        }
+    }
     removeParticipantFromEvent(eventId, participantId) {
         const participant = this.#participants.get(participantId)
         const event = this.#events.get(eventId)
