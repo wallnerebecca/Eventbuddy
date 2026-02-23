@@ -115,7 +115,14 @@ class EventBuddyView extends HTMLElement {
                 
                 <event-list class="sm:block w-full h-full overflow-y-auto row-start-2 row-span-1 sm:row-span-2"></event-list>
                 
+                <div id="home-screen" class="hidden sm:block row-start-1 row-span-2 sm:row-start-2 w-full h-full sm:col-start-2 pb-4 sm:pb-2">
+                    <div class="w-full h-full flex items-center justify-center bg-light-purple rounded-4xl">
+                        <span class="font-sigmar-one text-purple-950 text-5xl truncate rounded-3xl p-2 border-2 border-dashed border-purple-950">Select or create an event</span>
+                    </div>
+                </div>
+                
                 <detailed-event-view class="hidden row-start-1 row-span-2 sm:row-start-2 w-full h-full sm:col-start-2 pb-4 sm:pb-2"></detailed-event-view>
+                
                 
                 <div id="add-event-or-tags" class="hidden row-start-1 row-span-2 sm:row-start-2 w-full h-full sm:col-start-2 pb-4 sm:pb-2">
                     <div class="h-full box-border pt-30 sm:pt-0 grid grid-rows-[auto_1fr]">

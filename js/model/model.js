@@ -52,6 +52,7 @@ class EventBuddyModel extends EventTarget {
             })
         })
     }
+
     addUser({username, email}) {
         this.#users.push(new User(username, email));
         this.dispatchEvent(
