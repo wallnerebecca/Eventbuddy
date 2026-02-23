@@ -97,19 +97,13 @@ export default class Event {
         this.#tags.set(tag.id, tag);
     }
 
-    removeTag(tag) {
-        this.#tags.delete(tag.id);
-    }
-
-    removeAllTags() {
+    updateTags(tags) {
         this.#tags = new Map();
-    }
-
-    addTags(tags) {
         tags.forEach((tag) => {
             this.#tags.set(tag.id, tag);
         })
     }
+
 
     get participants() {
         return this.#participants.values().toArray();
@@ -119,19 +113,18 @@ export default class Event {
         this.#participants.set(participant.id, participant);
     }
 
-    removeParticipant(participant) {
-        this.#participants.delete(participant.id);
-    }
-
-    removeAllParticipants() {
+    updateParticipants(participants) {
         this.#participants = new Map();
-    }
-
-    addParticipants(participants) {
         participants.forEach((participant) => {
             this.#participants.set(participant.id, participant);
         })
     }
+
+    removeParticipant(participant) {
+        this.#participants.delete(participant.id);
+    }
+
+
 }
 
 class Status {
