@@ -16,6 +16,10 @@ export default class Tag {
         return this.#name;
     }
 
+    set name(name) {
+        this.#name = name;
+    }
+
 }
 
 

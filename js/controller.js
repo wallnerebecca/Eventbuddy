@@ -28,6 +28,7 @@ class Controller {
         document.querySelector("detailed-event-view").addEventListener("update-event-participants", this.handleUpdateEventParticipants);
 
         document.querySelector("tag-list").addEventListener("add-tag", this.handleAddTag)
+        document.querySelector("tag-list").addEventListener("edit-tag", this.handleEditTag)
         document.querySelector("tag-list").addEventListener("delete-tag", this.handleDeleteTag)
 
         document.querySelector("participant-list").addEventListener("add-participant", this.handleAddParticipant)
@@ -94,11 +95,32 @@ class Controller {
     /* TAG MANAGEMENT */
     handleAddTag = (e) => {
         const tagName = e.detail.tagName.trim();
-        if (model.isValidTagName(tagName)) {
-            model.addTag(tagName)
-        } else {
+        if (!model.isValidTagName(tagName)) {
             alert("Unable to add tag: tag must be between 1 and 20 characters long")
+            return;
         }
+
+        if (model.tagAlreadyExists(tagName)) {
+            alert("Unable to add tag: a tag with this name already exists!")
+            return;
+        }
+
+        model.addTag(tagName)
+    }
+
+    handleEditTag = (e) => {
+        const tagName = e.detail.tagName.trim();
+        if (!model.isValidTagName(tagName)) {
+            alert("Unable to add tag: tag must be between 1 and 20 characters long");
+            return;
+        }
+
+        if (model.tagAlreadyExists(tagName, e.detail.tagId)) {
+            alert("Unable to edit tag: a tag with this name already exists!")
+            return;
+        }
+
+        model.updateTag(e.detail.tagId, tagName)
     }
 
     handleDeleteTag = (e) => {
@@ -115,7 +137,13 @@ class Controller {
 
     /* PARTICIPANT MANAGEMENT */
     handleAddParticipant = (e) => {
-        model.addParticipant(e.detail.name, e.detail.email.toLowerCase(), e.detail.avatar)
+        const email = e.detail.email.toLowerCase()
+        if (model.participantAlreadyExists(email)) {
+            alert(`Cannot add participant: participant with email ${email} already exists`);
+            return;
+        }
+
+        model.addParticipant(e.detail.name, email, e.detail.avatar)
     }
 
     handleDeleteParticipant =  (e) => {
@@ -127,15 +155,16 @@ class Controller {
     }
 
     handleEditParticipant = (e) => {
-        const emailTaken = model.participantAlreadyExists(e.detail.email)
+        const email = e.detail.email.toLowerCase()
+        const emailTaken = model.participantAlreadyExists(email, e.detail.participantId)
 
         if (emailTaken) {
-            alert("This email is already taken")
+            alert(`Cannot edit participant: participant with email ${email} already exists`)
         } else {
             model.updateParticipant(
                 e.detail.participantId,
                 e.detail.name,
-                e.detail.email,
+                email,
                 e.detail.avatar
             )
         }

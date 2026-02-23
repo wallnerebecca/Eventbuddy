@@ -21,7 +21,7 @@ class ParticipantItem extends HTMLElement {
 
         const participantList = document.querySelector("participant-list");
 
-        const deleteButton = this.querySelector(`button.delete`)
+        const deleteButton = this.querySelector(`button.delete-participant`)
         deleteButton.addEventListener("click", ()=> {
             participantList.dispatchEvent(
                 new CustomEvent("delete-participant", {
@@ -31,52 +31,17 @@ class ParticipantItem extends HTMLElement {
                 })
             )
         });
-
-        const showParticipant = this.querySelector(".show-participant");
-        const editParticipant = this.querySelector(".edit-participant");
-        editParticipant.style.display = "none"
-
-        const editButton = this.querySelector(`button.edit`)
-        editButton.addEventListener("click", ()=> {
-            showParticipant.style.display = "none";
-            editParticipant.style.display = "block";
-        })
-
-        const cancelButton = this.querySelector(`button.cancel`)
-        cancelButton.addEventListener("click", (e)=> {
-            e.preventDefault()
-            showParticipant.style.display = "block";
-            editParticipant.style.display = "none";
-        })
-
-        const nameInput = this.querySelector(".name-input");
-        const emailInput = this.querySelector(".email-input");
-        const avatarInput = this.querySelector(".avatar-input");
-
-        const saveButton = this.querySelector(`button.save`)
-        saveButton.addEventListener("click", (e)=> {
-            e.preventDefault()
-
-            showParticipant.style.display = "block";
-            editParticipant.style.display = "none";
-
-            participantList.dispatchEvent(
-                new CustomEvent("edit-participant", {
-                    detail: {
-                        participantId: this.#participant.id,
-                        name: nameInput.value,
-                        email: emailInput.value,
-                        avatar: avatarInput.files[0]
-                    }
-                })
-            )
-        })
     }
+
+    get editButton() {
+        return this.querySelector("button.edit-participant")
+    }
+
     avatar() {
         if (this.#participant.avatar) {
             const imgSrc = URL.createObjectURL(this.#participant.avatar);
 
-            return `<img src=${imgSrc} width="200" height="200" alt="${this.#participant.name}'s avatar"/>`;
+            return `<img src=${imgSrc} class="rounded-full border border-solid border-purple-950 h-12 w-12" alt="${this.#participant.name}'s avatar"/>`;
         } else {
             return ``
         }
@@ -84,32 +49,9 @@ class ParticipantItem extends HTMLElement {
 
     template() {
         return `
-            <div class="show-participant">
-                ${this.avatar()}
-                <span class="font-bold">Name:</span> ${this.#participant.name} <br />
-                <span class="font-bold">Email:</span> ${this.#participant.email} <br />
-                <button class="edit bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    Edit
-                </button>
-                <button class="delete bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    Delete
-                </button>
-            </div>
-            <div class="edit-participant">
-                <form class="edit-participant-form" action="#">
-                    <label for="name" class="mb-2" >Name:</label><br>
-                    <input id="name" name="name" type="text" class="name-input border shadow py-2 mb-3" value="${this.#participant.name}" required><br>
-    
-                    <label for="email" class="mb-2" >Email:</label><br>
-                    <input id="email" name="email" type="email" class="email-input border shadow py-2 mb-3" value="${this.#participant.email}" required><br>
-    
-                    <label for="avatar" class="mb-2" >Avatar (png or jpeg):</label><br>
-                    <input id="avatar" name="avatar" type="file" accept="image/png, image/jpeg" class="avatar-input border shadow py-2 mb-3"><br>
-    
-                    <button class="save bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">Save</button>
-                    <button class="cancel bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Cancel</button>
-                </form>
-            </div>
+            <span class="rounded-full bg-orange-200 py-2 px-4 text-purple-950 text-2xl flex items-center">
+                ${this.avatar()}<span>${this.#participant.name}</span> <button type="button" class="edit-participant cursor-pointer material-symbols-rounded z-10">edit</button><button type="button" class="delete-participant cursor-pointer material-symbols-rounded z-10">close</button>
+            </span>
         `
     }
 
@@ -135,36 +77,151 @@ class ParticipantList extends HTMLElement {
     }
 
     render() {
-        this.innerHTML = "";
-        const container = document.createElement("div")
-        container.classList.add("border", "px-4", "py-4")
+        this.innerHTML = this.template();
 
-        container.appendChild(
-            this.header().content
-        )
+        const participantList = this.querySelector("#all-participants-list")
+        const editParticipantForm = this.querySelector("#edit-participant-form");
+
+        const addParticipantSection = this.querySelector("#add-participant-section");
+        const editParticipantSection = this.querySelector("#edit-participant-section");
+        const cancelParticipantEdit = editParticipantSection.querySelector(".cancel-participant-edit");
+
         this.#participants.map(participant => {
-            container.appendChild(this.participantItem(participant))
-        });
+            console.log("Participant:")
+            console.log(`${participant.id}: ${participant.name}: ${participant.email}`);
+            const participantItem = this.participantItem(participant)
+            participantItem.setAttribute("data-name", participant.name)
 
-        container.appendChild(this.createParticipantForm().content)
+            console.log(participantList)
+            participantList.appendChild(participantItem)
+            console.log(participantList)
 
-        const avatar = container.querySelector("#avatar")
+            participantItem.editButton.addEventListener("click", () =>{
+                addParticipantSection.classList.add("hidden")
+                editParticipantSection.classList.remove("hidden")
 
-        container.querySelector("#add-participant-form").addEventListener("submit", e => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            console.log(formData)
-            this.dispatchEvent(new CustomEvent("add-participant", {
-                detail: {
-                    name: formData.get("name"),
-                    email: formData.get("email"),
-                    avatar: avatar.files[0]
-                }
-            }))
+                editParticipantForm.setAttribute("data-id", participant.id)
+                editParticipantForm.querySelector("#edit-participant-name").value = participant.name
+                editParticipantForm.querySelector("#edit-participant-email").value = participant.email
+            })
         })
-        this.appendChild(container)
+
+        cancelParticipantEdit.addEventListener("click", () =>{
+            addParticipantSection.classList.remove("hidden")
+            editParticipantSection.classList.add("hidden")
+
+            editParticipantForm.removeAttribute("data-id")
+
+            editParticipantForm.querySelector("#edit-participant-name").value = ""
+            editParticipantForm.querySelector("#edit-participant-email").value = ""
+
+        })
+
+        const searchParticipants = this.querySelector(".search-participants");
+        searchParticipants.addEventListener("input", e => {
+            this.searchParticipantList(searchParticipants.value)
+        })
+
+        const fileInput = this.querySelector("#add-participant-avatar")
+        this.querySelector("#add-participant-form").addEventListener("submit", e => {
+            e.preventDefault();
+            const formData = new FormData(e.target)
+            participantList.dispatchEvent(
+                new CustomEvent("add-participant", {
+                    bubbles: true,
+                    detail: {
+                        name: formData.get("name"),
+                        email: formData.get("email"),
+                        avatar: fileInput.files[0]
+                    }
+                })
+            )
+        })
+
+        const editFileInput = this.querySelector("#edit-participant-avatar")
+        editParticipantForm.addEventListener("submit", e => {
+            e.preventDefault();
+            const formData = new FormData(e.target)
+            participantList.dispatchEvent(
+                new CustomEvent("edit-participant", {
+                    bubbles: true,
+                    detail: {
+                        participantId: editParticipantForm.getAttribute("data-id"),
+                        name: formData.get("name"),
+                        email: formData.get("email"),
+                        avatar: editFileInput.files[0]
+                    }
+                })
+            )
+        })
     }
 
+    searchParticipantList(name) {
+        const participantList = this.querySelector("#all-participants-list");
+
+        for (const participant of participantList.children) {
+            if (participant.getAttribute("data-name").toLowerCase().includes(name.toLowerCase())) {
+                participant.classList.remove("hidden");
+                participant.classList.add("block")
+            } else {
+                participant.classList.remove("block")
+                participant.classList.add("hidden");
+            }
+        }
+    }
+    template() {
+        return `
+            <div id="manage-participants" class="p-2 text-2xl h-full flex flex-col text-white">
+                <div class="grow h-0 overflow-y-auto">
+                    <div class="font-sigmar-one text-3xl">Participants:</div>
+                    <div class="px-1 py-1 relative flex">
+                        <div class="relative block w-fit pr-2">
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <span class="material-symbols-rounded text-purple-950 text-5xl!">search</span>
+                            </div>
+                            <input type="search" class="search-participants h-full w-full p-3 ps-15 bg-orange-200 rounded-full text-2xl focus:outline-none text-purple-950 placeholder:text-purple-950 [&::-webkit-search-cancel-button]:appearance-none" placeholder="Filter participants..."/>
+                        </div>
+                    </div>
+                    <div id="all-participants-list" class="h-fit py-4 flex gap-1 flex-wrap">
+    
+                    </div>
+                </div>
+                <div class="grow h-0 overflow-y-auto">
+                    <div id="add-participant-section">
+                        <div class="font-sigmar-one text-3xl">Add Participant:</div>
+                        <form id="add-participant-form" action="#">
+                            <label for="add-participant-name" class="mb-2" >Name</label><br>
+                            <input id="add-participant-name" name="name" type="text" class="rounded-full px-4 bg-orange-200 text-purple-950  py-2 mb-3" required><br>
+                            
+                            <label for="add-participant-email" class="mb-2" >Email</label><br>
+                            <input id="add-participant-email" name="email" type="email" class="rounded-full px-4 bg-orange-200 text-purple-950  py-2 mb-3" required><br>
+                            
+                            <label for="add-participant-avatar" class="mb-2" >Avatar (png or jpeg)</label><br>
+                            <input id="add-participant-avatar" name="avatar" type="file" accept="image/png, image/jpeg" class="rounded-full px-4 bg-orange-200 text-purple-950  py-2 mb-3"><br>
+    
+                            <button type="submit" class="self-center mt-2 p-2 rounded-full text-orange-400 bg-purple-950"><span class="text-2xl font-sigmar-one">Add Participant</span></button>
+                        </form>
+                    </div>
+                    <div id="edit-participant-section" class="hidden">
+                        <div class="font-sigmar-one text-3xl">Edit Participant:</div>
+                        <form id="edit-participant-form" action="#">
+                            <label for="edit-participant-name" class="mb-2" >Name</label><br>
+                            <input id="edit-participant-name" name="name" type="text" class="rounded-full px-4 bg-orange-200 text-purple-950  py-2 mb-3" required><br>
+                            
+                            <label for="edit-participant-email" class="mb-2" >Email</label><br>
+                            <input id="edit-participant-email" name="email" type="email" class="rounded-full px-4 bg-orange-200 text-purple-950  py-2 mb-3" required><br>
+                            
+                            <label for="edit-partiicpant-avatar" class="mb-2" >Avatar (png or jpeg)</label><br>
+                            <input id="edit-participant-avatar" name="avatar" type="file" accept="image/png, image/jpeg" class="rounded-full px-4 bg-orange-200 text-purple-950  py-2 mb-3"><br>
+    
+                            <button type="submit" class="self-center mt-2 p-2 rounded-full text-orange-400 bg-purple-950"><span class="text-2xl font-sigmar-one">Edit Participant</span></button>
+                            <button type="button" class="cancel-participant-edit self-center mt-2 p-2 rounded-full text-orange-400 bg-purple-950"><span class="text-2xl font-sigmar-one">Cancel</span></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        `
+    }
     header() {
         const header = document.createElement("template");
         header.innerHTML = `

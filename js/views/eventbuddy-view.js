@@ -38,21 +38,26 @@ class EventBuddyView extends HTMLElement {
 
         const showEventTab = this.querySelector("#show-events-tab");
         const showTagsTab = this.querySelector("#show-tags-tab");
+        const showParticipantsTab = this.querySelector("#show-participants-tab");
 
         const eventManagement = this.querySelector("event-management");
         const tagsList = this.querySelector("tag-list");
+        const participantList = this.querySelector("participant-list");
 
         showEventTab.addEventListener("click", (e) => {
             e.preventDefault();
             console.log("SHOW EVENT TAB")
-            tagsList.classList.add("hidden")
-            showTagsTab.classList.add("text-light-purple")
-            showTagsTab.classList.remove("text-purple-950", "bg-light-purple");
-
             eventManagement.classList.remove("hidden")
             showEventTab.classList.remove("text-light-purple");
             showEventTab.classList.add("text-purple-950", "bg-light-purple");
 
+            tagsList.classList.add("hidden")
+            showTagsTab.classList.add("text-light-purple")
+            showTagsTab.classList.remove("text-purple-950", "bg-light-purple");
+
+            participantList.classList.add("hidden")
+            showParticipantsTab.classList.add("text-light-purple")
+            showParticipantsTab.classList.remove("text-purple-950", "bg-light-purple");
         })
 
         showTagsTab.addEventListener("click", (e) => {
@@ -65,6 +70,24 @@ class EventBuddyView extends HTMLElement {
             eventManagement.classList.add("hidden")
             showEventTab.classList.add("text-light-purple");
             showEventTab.classList.remove("text-purple-950", "bg-light-purple");
+
+            participantList.classList.add("hidden")
+            showParticipantsTab.classList.add("text-light-purple")
+            showParticipantsTab.classList.remove("text-purple-950", "bg-light-purple");
+        })
+
+        showParticipantsTab.addEventListener("click", (e) => {
+            participantList.classList.remove("hidden")
+            showParticipantsTab.classList.remove("text-light-purple")
+            showParticipantsTab.classList.add("text-purple-950", "bg-light-purple");
+
+            eventManagement.classList.add("hidden")
+            showEventTab.classList.add("text-light-purple");
+            showEventTab.classList.remove("text-purple-950", "bg-light-purple");
+
+            tagsList.classList.add("hidden")
+            showTagsTab.classList.add("text-light-purple")
+            showTagsTab.classList.remove("text-purple-950", "bg-light-purple");
         })
     }
 
@@ -99,10 +122,12 @@ class EventBuddyView extends HTMLElement {
                         <div class="h-fit row-start-1 font-sigmar-one bg-purple-950 flex justify-start">
                             <div id="show-events-tab" class="w-fit px-4 h-16 text-3xl flex items-center bg-light-purple text-purple-950 rounded-t-lg">Events</div>
                             <div id="show-tags-tab" class="w-fit px-4 h-16 text-3xl flex items-center text-light-purple rounded-t-lg">Tags</div>
+                            <div id="show-participants-tab" class="w-fit px-4 h-16 text-3xl flex items-center text-light-purple rounded-t-lg">Participants</div>
                         </div>
                         <div class="row-start-2 bg-light-purple rounded-tr-4xl rounded-b-4xl">
                             <event-management class="h-full"></event-management>
                             <tag-list class="hidden h-full"></tag-list>
+                            <participant-list class="hidden h-full"></participant-list>
                         </div>
                     </div>
                 </div>
@@ -117,11 +142,6 @@ class EventBuddyView extends HTMLElement {
                     </div>
                 </div>
             </div>
-            
-            <tag-list class="hidden"></tag-list>
-            <participant-list class="hidden"></participant-list>
-            
-            
         `;
     }
 

@@ -233,11 +233,6 @@ class EventBuddyModel extends EventTarget {
         email,
         avatar
     ) {
-        if (this.participantAlreadyExists(email)) {
-            console.log(`Participant with email ${email} already exists`);
-            return;
-        }
-
         const participant = new Participant(name, email, avatar)
         console.log(`Adding participant with email ${email}`);
 
@@ -245,8 +240,12 @@ class EventBuddyModel extends EventTarget {
         this.sendParticipantsChangedEvent()
     }
 
-    participantAlreadyExists(email) {
-        return this.#participants.values().toArray().some(participant => participant.email === email);
+    participantAlreadyExists(email, id) {
+        if (id) {
+            return this.#participants.values().toArray().some(participant => (participant.email === email && participant.id !== id));
+        } else {
+            return this.#participants.values().some(participant => participant.email === email);
+        }
     }
 
     updateParticipant(
@@ -320,10 +319,6 @@ class EventBuddyModel extends EventTarget {
     }
     // Tags
     addTag(tagName) {
-        if (this.tagAlreadyExists(tagName)) {
-            return;
-        }
-
         const tag = new Tag(tagName)
         console.log(`Adding tag ${tag}`);
 
@@ -331,12 +326,24 @@ class EventBuddyModel extends EventTarget {
         this.sendTagListChangedEvent()
     }
 
+    updateTag(tagId, tagName) {
+        const tag = this.#tags.get(tagId)
+        tag.name = tagName
+
+        this.sendEventListChangedEvent()
+        this.sendTagListChangedEvent()
+    }
+
     isValidTagName(tagName) {
         return tagName.length > 0 && tagName.length < 20;
     }
 
-    tagAlreadyExists(tagName) {
-        return this.#tags.keys().toArray().includes(tagName)
+    tagAlreadyExists(tagName, id) {
+        if (id) {
+            return this.#tags.values().toArray().some(t => t.name.toLowerCase() === tagName.toLowerCase() && t.id !== id)
+        } else {
+            return this.#tags.values().toArray().some(t => t.name.toLowerCase() === tagName.toLowerCase())
+        }
     }
 
     addTagToEvent(eventId, tagId) {

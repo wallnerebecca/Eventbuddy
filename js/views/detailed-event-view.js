@@ -208,7 +208,7 @@ class DetailedEventView extends HTMLElement {
     tagPill(tag) {
         const t = document.createElement("template");
         t.innerHTML = `
-            <span class=" rounded-full bg-orange-200 py-2 px-4 text-purple-950 text-2xl">${tag.name}</span>
+            <span class="rounded-full bg-orange-200 py-2 px-4 text-purple-950 text-2xl">${tag.name}</span>
         `
 
         return t.content
