@@ -150,7 +150,7 @@ class EventBuddyModel extends EventTarget {
                 .filter(event => {
                     const selectedStatuses = this.#filters.getFilterValues("status") || [];
                     if(selectedStatuses.length > 0) {
-                        return selectedStatuses.includes(event.status.description);
+                        return selectedStatuses.includes(event.status);
                     }
                     return true;
                 })

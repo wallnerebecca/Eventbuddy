@@ -83,9 +83,9 @@ export default class Event {
         const currentTime = new Date()
 
         if (this.#datetime < currentTime) {
-            return Status.Completed
+            return "completed"
         } else {
-            return Status.Planned
+            return "planned"
         }
     }
 
@@ -125,9 +125,4 @@ export default class Event {
     }
 
 
-}
-
-class Status {
-    static Planned = Symbol("planned");
-    static Completed = Symbol("completed");
 }
