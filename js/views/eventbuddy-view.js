@@ -1,5 +1,3 @@
-import {model} from "../model/model.js";
-
 class EventBuddyView extends HTMLElement {
 
     constructor() {

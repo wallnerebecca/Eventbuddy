@@ -13,19 +13,13 @@ class Controller {
 
         document.querySelector("detailed-event-view").addEventListener("update-event", this.handleUpdateEvent);
         document.querySelector("detailed-event-view").addEventListener("delete-event", this.handleDeleteEvent);
-
-        document.querySelector("event-list").addEventListener("add-tag-to-event", this.handleAddTagToEvent);
-        document.querySelector("event-list").addEventListener("remove-tag-from-event", this.handleRemoveTagFromEvent);
-
-        document.querySelector("event-list").addEventListener("add-participant-to-event", this.handleAddParticipantToEvent)
-        document.querySelector("event-list").addEventListener("remove-participant-from-event", this.handleRemoveParticipantFromEvent)
+        document.querySelector("detailed-event-view").addEventListener("update-event-participants", this.handleUpdateEventParticipants);
 
         document.querySelector("filter-bar").addEventListener("update-status-filter", this.handleUpdateStatusFilter);
         document.querySelector("filter-bar").addEventListener("update-tags-filter", this.handleUpdateTagsFilter);
         document.querySelector("filter-bar").addEventListener("update-participants-filter", this.handleUpdateParticipantsFilter);
         document.querySelector("filter-bar").addEventListener("update-search", this.handleUpdateSearch);
 
-        document.querySelector("detailed-event-view").addEventListener("update-event-participants", this.handleUpdateEventParticipants);
 
         document.querySelector("tag-list").addEventListener("add-tag", this.handleAddTag)
         document.querySelector("tag-list").addEventListener("edit-tag", this.handleEditTag)
@@ -56,25 +50,10 @@ class Controller {
         model.deleteEvent(e.detail.eventId)
     }
 
-    handleAddTagToEvent = (e) => {
-        model.addTagToEvent(e.detail.id, e.detail.tag)
-    }
-
-    handleRemoveTagFromEvent = (e) => {
-        model.deleteTagFromEvent(e.detail.id, e.detail.tag)
-    }
-
-    handleAddParticipantToEvent = (e) => {
-       model.addParticipantToEvent(e.detail.id, e.detail.participantId)
-    }
-
-    handleRemoveParticipantFromEvent = (e) => {
-       model.removeParticipantFromEvent(e.detail.id, e.detail.participantId)
-    }
-
     handleUpdateEventParticipants = (e) => {
         model.updateEventParticipants(e.detail.eventId, e.detail.participantIds);
     }
+
     /* FILTER BAR */
     handleUpdateStatusFilter = (e) => {
         model.updateStatusFilters(e.detail.selectedOptions);
