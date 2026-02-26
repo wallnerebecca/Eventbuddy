@@ -442,6 +442,9 @@
   .w-1\/4 {
     width: calc(1/4 * 100%);
   }
+  .w-1\/8 {
+    width: calc(1/8 * 100%);
+  }
   .w-2xs {
     width: var(--container-2xs);
   }
@@ -480,6 +483,9 @@
   }
   .max-w-1 {
     max-width: calc(var(--spacing) * 1);
+  }
+  .max-w-1\/4 {
+    max-width: calc(1/4 * 100%);
   }
   .max-w-1\/8 {
     max-width: calc(1/8 * 100%);

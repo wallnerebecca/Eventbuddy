@@ -63,7 +63,7 @@ class EventListItem extends HTMLElement {
                 <div class="pl-1 font-open-sans col-start-4 col-span-17 row-start-2 text-white text-xl">
                   <span><span class="material-symbols-rounded">location_on</span>${this.#event.location}</span>
                   <span class="px-2"/>
-                  <span><span class="material-symbols-rounded">schedule</span> ${this.#event.datetime.toLocaleTimeString(getLang())}</span>
+                  <span><span class="material-symbols-rounded">schedule</span> ${this.#event.datetime.toLocaleTimeString(getLang(), {timeStyle: "short"})}</span>
                 </div>
             
                 <div class="pl-1 font-open-sans col-start-4 col-span-17 row-start-3 text-white">

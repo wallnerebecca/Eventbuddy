@@ -295,13 +295,13 @@ class FilterBar extends HTMLElement {
     template() {
         return `            
             <div class="px-1 py-1 relative flex pt-10 pb-5">
-                <div class="relative block w-7/8 pr-2">
+                <div class="relative block box-border w-7/8 pr-2">
                     <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                         <span class="material-symbols-rounded text-5xl!">search</span>
                     </div>
                     <input type="search" class="search h-full w-full p-3 ps-15 bg-light-purple/50 rounded-full text-2xl focus:outline-none text-orange-400 placeholder:text-orange-400 [&::-webkit-search-cancel-button]:appearance-none" placeholder="Discover events"/>
                 </div>
-                <div id="open-filter-modal" class="max-w-1/8 aspect-square w-1/4 bg-light-purple/50 rounded-full text-2xl flex justify-center items-center"><span class="material-symbols-rounded font-bold! text-5xl!">filter_list</span></div>
+                <div id="open-filter-modal" class="box-border max-w-1/4 w-1/8 text-2xl flex justify-center items-center"><span class="material-symbols-rounded aspect-square bg-light-purple/50 rounded-full font-bold! text-5xl!">filter_list</span></div>
             </div>
             <div id="modal-container" class="hidden">
                 <div id="tag-filter-modal" class="absolute left-0 top-0 w-screen text-purple-950 h-screen bg-black/50 z-50 sm:flex sm:justify-center pt-30 sm:pb-20">
