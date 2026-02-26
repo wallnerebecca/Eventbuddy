@@ -42,52 +42,55 @@ class EventBuddyView extends HTMLElement {
         const tagsList = this.querySelector("tag-list");
         const participantList = this.querySelector("participant-list");
 
-        showEventTab.addEventListener("click", (e) => {
-            e.preventDefault();
-            console.log("SHOW EVENT TAB")
-            eventManagement.classList.remove("hidden")
-            showEventTab.classList.remove("text-light-purple");
-            showEventTab.classList.add("text-purple-950", "bg-light-purple");
+        const tabsDropdown = this.querySelector("#tabs-dropdown");
 
-            tagsList.classList.add("hidden")
-            showTagsTab.classList.add("text-light-purple")
-            showTagsTab.classList.remove("text-purple-950", "bg-light-purple");
 
-            participantList.classList.add("hidden")
-            showParticipantsTab.classList.add("text-light-purple")
-            showParticipantsTab.classList.remove("text-purple-950", "bg-light-purple");
-        })
+        function showTab(tabName) {
+            // Hide all sections
+            eventManagement.classList.add("hidden");
+            tagsList.classList.add("hidden");
+            participantList.classList.add("hidden");
 
-        showTagsTab.addEventListener("click", (e) => {
-            e.preventDefault();
-            console.log("SHOW TAGS TAB")
-            tagsList.classList.remove("hidden")
-            showTagsTab.classList.remove("text-light-purple")
-            showTagsTab.classList.add("text-purple-950", "bg-light-purple");
-
-            eventManagement.classList.add("hidden")
-            showEventTab.classList.add("text-light-purple");
             showEventTab.classList.remove("text-purple-950", "bg-light-purple");
-
-            participantList.classList.add("hidden")
-            showParticipantsTab.classList.add("text-light-purple")
-            showParticipantsTab.classList.remove("text-purple-950", "bg-light-purple");
-        })
-
-        showParticipantsTab.addEventListener("click", (e) => {
-            participantList.classList.remove("hidden")
-            showParticipantsTab.classList.remove("text-light-purple")
-            showParticipantsTab.classList.add("text-purple-950", "bg-light-purple");
-
-            eventManagement.classList.add("hidden")
-            showEventTab.classList.add("text-light-purple");
-            showEventTab.classList.remove("text-purple-950", "bg-light-purple");
-
-            tagsList.classList.add("hidden")
-            showTagsTab.classList.add("text-light-purple")
             showTagsTab.classList.remove("text-purple-950", "bg-light-purple");
-        })
+            showParticipantsTab.classList.remove("text-purple-950", "bg-light-purple");
+
+            showEventTab.classList.add("text-light-purple");
+            showTagsTab.classList.add("text-light-purple");
+            showParticipantsTab.classList.add("text-light-purple");
+
+            if (tabName === "events") {
+                eventManagement.classList.remove("hidden");
+                showEventTab.classList.remove("text-light-purple");
+                showEventTab.classList.add("text-purple-950", "bg-light-purple");
+            } else if (tabName === "tags") {
+                tagsList.classList.remove("hidden");
+                showTagsTab.classList.remove("text-light-purple");
+                showTagsTab.classList.add("text-purple-950", "bg-light-purple");
+            } else if (tabName === "participants") {
+                participantList.classList.remove("hidden");
+                showParticipantsTab.classList.remove("text-light-purple");
+                showParticipantsTab.classList.add("text-purple-950", "bg-light-purple");
+            }
+
+
+            if (tabsDropdown) {
+                tabsDropdown.value = tabName;
+            }
+        }
+
+        showEventTab.addEventListener("click", () => showTab("events"));
+        showTagsTab.addEventListener("click", () => showTab("tags"));
+        showParticipantsTab.addEventListener("click", () => showTab("participants"));
+
+        if (tabsDropdown) {
+            tabsDropdown.addEventListener("change", (e) => {
+                showTab(e.target.value);
+            });
+        }
     }
+
+
 
     highlightButton(button) {
         const navigateHome = this.querySelector("#navigate-home");
@@ -108,12 +111,12 @@ class EventBuddyView extends HTMLElement {
         return `
             <user-view class="hidden"></user-view>
             
-            <div class="px-2 w-screen h-screen grid grid-cols-1 grid-rows-[auto_1fr_3.75rem] sm:grid-cols-2 md:grid-cols-[384px_1fr]">
+            <div class="px-2 w-full h-screen grid grid-cols-1 grid-rows-[auto_1fr_3.75rem] sm:grid-cols-2 md:grid-cols-[384px_1fr]">
                 <filter-bar class="sm:block w-full row-start-1 row-span-1"></filter-bar>
                 
                 <event-list class="sm:block w-full h-full overflow-y-auto row-start-2 row-span-1 sm:row-span-2"></event-list>
                 
-                <div id="home-screen" class="hidden sm:block row-start-1 row-span-2 sm:row-start-2 w-full h-full sm:col-start-2 pb-4 sm:pb-2">
+                <div id="home-screen" class="hidden sm:block pl-2 row-start-1 row-span-2 sm:row-start-2 w-full h-full sm:col-start-2 pb-4 sm:pb-2">
                     <div class="w-full h-full flex items-center justify-center bg-light-purple rounded-4xl">
                         <span class="font-sigmar-one text-purple-950 text-5xl truncate rounded-3xl p-2 border-2 border-dashed border-purple-950">Select or create an event</span>
                     </div>
@@ -125,9 +128,22 @@ class EventBuddyView extends HTMLElement {
                 <div id="add-event-or-tags" class="hidden row-start-1 row-span-2 sm:row-start-2 w-full h-full sm:col-start-2 pb-4 sm:pb-2">
                     <div class="h-full box-border pt-30 sm:pt-0 grid grid-rows-[auto_1fr]">
                         <div class="h-fit row-start-1 font-sigmar-one bg-purple-950 flex justify-start">
-                            <div id="show-events-tab" class="w-fit px-4 h-16 text-3xl flex items-center bg-light-purple text-purple-950 rounded-t-lg">Events</div>
-                            <div id="show-tags-tab" class="w-fit px-4 h-16 text-3xl flex items-center text-light-purple rounded-t-lg">Tags</div>
-                            <div id="show-participants-tab" class="w-fit px-4 h-16 text-3xl flex items-center text-light-purple rounded-t-lg">Participants</div>
+                              <div class="sm:hidden relative inline-block">
+                                <select id="tabs-dropdown"
+                                        class="h-16 px-4 text-3xl bg-light-purple text-purple-950 rounded-t-lg w-auto min-w-[6rem] focus:outline-none">
+                                  <option value="events" selected>Events</option>
+                                  <option value="tags">Tags</option>
+                                  <option value="participants">Participants</option>
+                                </select>
+                              </div>
+                        
+                            <div class="hidden sm:flex w-full">
+                                <div id="show-events-tab" class="w-fit px-4 h-16 text-3xl flex items-center bg-light-purple text-purple-950 rounded-t-lg">Events</div>
+                                <div id="show-tags-tab" class="w-fit px-4 h-16 text-3xl flex items-center text-light-purple rounded-t-lg">Tags</div>
+                                <div id="show-participants-tab" class="w-fit px-4 h-16 text-3xl flex items-center text-light-purple rounded-t-lg">Participants</div>
+                            </div>
+                            
+                            
                         </div>
                         <div class="row-start-2 bg-light-purple rounded-tr-4xl rounded-b-4xl">
                             <event-management class="h-full"></event-management>

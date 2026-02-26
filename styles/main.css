@@ -32,3 +32,28 @@
         background: #c0a0b9;
     }
 }
+
+
+/* scrollbars */
+*::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: #6b21a8;
+    border-radius: 9999px;
+}
+
+*::-webkit-scrollbar-button {
+    display: none;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: #a78bfa;
+}
+

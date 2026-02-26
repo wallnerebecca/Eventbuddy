@@ -367,7 +367,11 @@ class FilterBar extends HTMLElement {
             </div>
             <div id="modal-container" class="hidden">
                 <div id="tag-filter-modal" class="absolute left-0 top-0 w-screen text-purple-950 h-screen bg-black/50 z-50 sm:flex sm:justify-center pt-30 sm:pb-5">
-                    <div class="rounded-t-4xl max-w-xl w-full h-full bg-[#FFD6A7] sm:rounded-b-4xl p-8 flex flex-col items-center">
+                    <div class="rounded-t-4xl max-w-xl w-full max-h-full overflow-y-auto [&::-webkit-scrollbar]:w-2
+         [&::-webkit-scrollbar-track]:bg-transparent
+         [&::-webkit-scrollbar-button]:hidden
+         [&::-webkit-scrollbar-thumb]:bg-purple-400
+         [&::-webkit-scrollbar-thumb]:rounded-full bg-[#FFD6A7] sm:rounded-b-4xl p-8 flex flex-col items-center">
                         <div class="w-2/10 h-1  bg-purple-950 rounded-full"></div>
                         <span class="text-5xl font-sigmar-one pb-8">Filters</span>
                         
