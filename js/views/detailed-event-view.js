@@ -208,7 +208,7 @@ class DetailedEventView extends HTMLElement {
     tagPill(tag) {
         const t = document.createElement("template");
         t.innerHTML = `
-            <div class="rounded-full bg-orange-200 py-2 px-4 text-purple-950 text-2xl cursor-default">${tag.name}</div>
+            <div class="rounded-full bg-orange-200 py-1 px-2 text-purple-950 text-1xl cursor-default">${tag.name}</div>
         `
 
         return t.content
@@ -369,16 +369,15 @@ class DetailedEventView extends HTMLElement {
                     <div class="w-full row-start-1">
                         <div class="mb-1 flex items-center bg-light-purple rounded-2xl p-1">
                             <div class="flex flex-col justify-center">
-                                <div class="pl-1 font-sigmar-one col-start-4 col-span-17 row-start-1 text-2xl text-purple-950">
+                                <div class="pl-1 font-sigmar-one col-start-4 col-span-17 row-start-1 text-4xl text-purple-950">
                                   ${this.#activeEvent.title}
                                 </div>
                             
-                                <div class="pl-1 font-open-sans col-start-4 col-span-17 row-start-2 text-white text-xl">
-                                  <span><span class="material-symbols-rounded">location_on</span>${this.#activeEvent.location}</span>
-                                  <span class="px-2"/>
-                                  <span><span class="material-symbols-rounded">schedule</span> ${this.#activeEvent.datetime.toLocaleString(getLang(), {dateStyle: "long", timeStyle: "short"})}</span>
-                                </div>
-                            
+                                <div class="pl-1 font-open-sans col-start-4 col-span-17 row-start-2 text-white text-xl flex flex-col sm:flex-row sm:items-center sm:gap-4">
+                                  <span class="flex items-center gap-1"><span class="material-symbols-rounded ">location_on</span>${this.#activeEvent.location}</span>
+                                  
+                                  <span class="flex items-center gap-1"><span class="material-symbols-rounded">schedule</span> ${this.#activeEvent.datetime.toLocaleString(getLang(), {dateStyle: "long", timeStyle: "short"})}</span>
+                                </div>                            
                                 <div class="pl-1 font-open-sans col-start-4 col-span-17 row-start-3 text-white">
                                   <div class="participants flex"></div>
                                 </div>
@@ -467,8 +466,8 @@ class DetailedEventView extends HTMLElement {
                            
                     <div class="w-full row-start-3 py-2 flex justify-between">
                         <div class="flex gap-2">
-                            <button id="back-to-event-info" class="invisible h-12 w-12 p-2 rounded-full text-orange-400 bg-purple-950"><span class="material-symbols-rounded text-3xl! font-bold!">arrow_back</span></button>
-                            <button id="delete-event" class="invisible h-12 p-2 rounded-full text-orange-400 bg-purple-950"><span class="material-symbols-rounded text-3xl! font-bold!">delete</span></button>
+                            <button id="back-to-event-info" class="hidden sm:invisible h-12 w-12 p-2 rounded-full text-orange-400 bg-purple-950"><span class="material-symbols-rounded text-3xl! font-bold!">arrow_back</span></button>
+                            <button id="delete-event" class="hidden sm:invisible h-12 p-2 rounded-full text-orange-400 bg-purple-950"><span class="material-symbols-rounded text-3xl! font-bold!">delete</span></button>
                         </div>
                                 
                         <div class="text-purple-950 px-1 flex justify-end">

@@ -301,9 +301,6 @@
   .inline-block {
     display: inline-block;
   }
-  .table {
-    display: table;
-  }
   .aspect-square {
     aspect-ratio: 1 / 1;
   }
@@ -364,14 +361,8 @@
   .max-h-full {
     max-height: 100%;
   }
-  .w-1 {
-    width: calc(var(--spacing) * 1);
-  }
   .w-1\/2 {
     width: calc(1/2 * 100%);
-  }
-  .w-2 {
-    width: calc(var(--spacing) * 2);
   }
   .w-2\/10 {
     width: calc(2/10 * 100%);
@@ -415,23 +406,14 @@
   .flex-1 {
     flex: 1;
   }
-  .flex-shrink {
-    flex-shrink: 1;
-  }
   .shrink-0 {
     flex-shrink: 0;
-  }
-  .flex-grow {
-    flex-grow: 1;
   }
   .grow {
     flex-grow: 1;
   }
   .grow-0 {
     flex-grow: 0;
-  }
-  .border-collapse {
-    border-collapse: collapse;
   }
   .-translate-y-full {
     --tw-translate-y: -100%;
@@ -442,9 +424,6 @@
   }
   .cursor-pointer {
     cursor: pointer;
-  }
-  .resize {
-    resize: both;
   }
   .grid-cols-1 {
     grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -488,9 +467,6 @@
   .justify-start {
     justify-content: flex-start;
   }
-  .gap-0\.5 {
-    gap: calc(var(--spacing) * 0.5);
-  }
   .gap-1 {
     gap: calc(var(--spacing) * 1);
   }
@@ -502,12 +478,6 @@
   }
   .gap-x-0\.5 {
     column-gap: calc(var(--spacing) * 0.5);
-  }
-  .gap-x-0\.25 {
-    column-gap: calc(var(--spacing) * 0.25);
-  }
-  .gap-x-2 {
-    column-gap: calc(var(--spacing) * 2);
   }
   .self-center {
     align-self: center;
@@ -609,9 +579,6 @@
   .bg-\[\#FFD6A7\] {
     background-color: #FFD6A7;
   }
-  .bg-black {
-    background-color: var(--color-black);
-  }
   .bg-black\/50 {
     background-color: color-mix(in srgb, #000 50%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
@@ -686,12 +653,6 @@
   }
   .ps-15 {
     padding-inline-start: calc(var(--spacing) * 15);
-  }
-  .pt-4 {
-    padding-top: calc(var(--spacing) * 4);
-  }
-  .pt-5 {
-    padding-top: calc(var(--spacing) * 5);
   }
   .pt-10 {
     padding-top: calc(var(--spacing) * 10);
@@ -783,9 +744,6 @@
   .text-nowrap {
     text-wrap: nowrap;
   }
-  .text-wrap {
-    text-wrap: wrap;
-  }
   .text-light-purple {
     color: var(--color-light-purple);
   }
@@ -807,10 +765,6 @@
   .shadow {
     --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  }
-  .outline {
-    outline-style: var(--tw-outline-style);
-    outline-width: 1px;
   }
   .filter {
     filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
@@ -865,6 +819,11 @@
       outline-style: none;
     }
   }
+  .sm\:invisible {
+    @media (width >= 36rem) {
+      visibility: hidden;
+    }
+  }
   .sm\:col-start-2 {
     @media (width >= 36rem) {
       grid-column-start: 2;
@@ -915,6 +874,11 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
+  .sm\:flex-row {
+    @media (width >= 36rem) {
+      flex-direction: row;
+    }
+  }
   .sm\:items-center {
     @media (width >= 36rem) {
       align-items: center;
@@ -928,6 +892,11 @@
   .sm\:justify-end {
     @media (width >= 36rem) {
       justify-content: flex-end;
+    }
+  }
+  .sm\:gap-4 {
+    @media (width >= 36rem) {
+      gap: calc(var(--spacing) * 4);
     }
   }
   .sm\:rounded-b-4xl {
@@ -976,34 +945,14 @@
       width: calc(var(--spacing) * 2);
     }
   }
-  .\[\&\:\:-webkit-scrollbar-button\]\:hidden {
-    &::-webkit-scrollbar-button {
-      display: none;
-    }
-  }
-  .\[\&\:\:-webkit-scrollbar-thumb\]\:rounded-full {
-    &::-webkit-scrollbar-thumb {
-      border-radius: calc(infinity * 1px);
-    }
-  }
   .\[\&\:\:-webkit-scrollbar-thumb\]\:bg-gray-300 {
     &::-webkit-scrollbar-thumb {
       background-color: var(--color-gray-300);
     }
   }
-  .\[\&\:\:-webkit-scrollbar-thumb\]\:bg-purple-400 {
-    &::-webkit-scrollbar-thumb {
-      background-color: var(--color-purple-400);
-    }
-  }
   .\[\&\:\:-webkit-scrollbar-track\]\:bg-gray-100 {
     &::-webkit-scrollbar-track {
       background-color: var(--color-gray-100);
-    }
-  }
-  .\[\&\:\:-webkit-scrollbar-track\]\:bg-transparent {
-    &::-webkit-scrollbar-track {
-      background-color: transparent;
     }
   }
   .\[\&\:\:-webkit-search-cancel-button\]\:appearance-none {
@@ -1122,11 +1071,6 @@
   inherits: false;
   initial-value: 0 0 #0000;
 }
-@property --tw-outline-style {
-  syntax: "*";
-  inherits: false;
-  initial-value: solid;
-}
 @property --tw-blur {
   syntax: "*";
   inherits: false;
@@ -1203,7 +1147,6 @@
       --tw-ring-offset-width: 0px;
       --tw-ring-offset-color: #fff;
       --tw-ring-offset-shadow: 0 0 #0000;
-      --tw-outline-style: solid;
       --tw-blur: initial;
       --tw-brightness: initial;
       --tw-contrast: initial;
