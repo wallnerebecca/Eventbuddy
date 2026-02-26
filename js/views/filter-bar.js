@@ -29,6 +29,7 @@ class FilterBar extends HTMLElement {
         this.updateTagFilter()
         this.updateParticipantFilter()
         this.updateStatusFilter()
+        this.updateQuickTagsFilter()
 
         const resetFilterButton = this.querySelector("#reset-filters-button");
         resetFilterButton.addEventListener("click", (e) => {
@@ -87,6 +88,14 @@ class FilterBar extends HTMLElement {
         openFilterModal.addEventListener("click", (e) => {
             modalContainer.classList.remove("hidden")
             modalContainer.classList.add("block")
+            const quickTagsFilter = this.querySelector("#quick-tags-filter");
+
+            for (const tag of quickTagsFilter.children) {
+                tag.checked = false;
+                tag.classList.remove("underline");
+            }
+            this.sendUpdatedTagFilter()
+
         })
 
         window.addEventListener("click", (e) => {
@@ -160,10 +169,22 @@ class FilterBar extends HTMLElement {
             }
         }
 
+        const quickTagList = this.querySelector("#quick-tags-filter");
+
+        const underlineOptions = []
+        for ( const tag of quickTagList.children ) {
+            if (tag.checked) {
+                underlineOptions.push(tag.getAttribute("data-id"));
+            }
+        }
+
+        const combinedOptions = [...new Set([...selectedOptions, ...underlineOptions])];
+
+
         this.dispatchEvent(
             new CustomEvent("update-tags-filter", {
                 detail: {
-                    selectedOptions: selectedOptions,
+                    selectedOptions: combinedOptions,
                 }
             })
         );
@@ -281,6 +302,44 @@ class FilterBar extends HTMLElement {
         );
 
     }
+
+    updateQuickTagsFilter() {
+        const quickTags = this.querySelector("#quick-tags-filter");
+
+        const tags = this.#tags.slice(0,5)
+
+        tags.forEach((tag) => {
+            const element = this.tagPill(tag)
+            element.checked = false;
+
+            element.addEventListener("click", (e) => {
+                element.checked = !element.checked;
+
+                if (element.checked) {
+                    element.classList.add("underline")
+                    console.log("clicked");
+                } else {
+                    element.classList.remove("underline");
+                    console.log("again-clicked");
+                }
+                this.sendUpdatedTagFilter();
+            })
+
+
+            quickTags.appendChild(element)
+        })
+
+
+    }
+
+    tagPill(tag) {
+        const t = document.createElement("template");
+        t.innerHTML = `
+            <button data-id="${tag.id}" class="rounded-full bg-light-purple py-1 px-2 text-purple-950 text-lg cursor-pointer">${tag.name}</button>
+        `
+
+        return t.content.cloneNode(true).firstElementChild
+    }
     dropDownElement(tag) {
         const template = document.createElement("template")
         template.innerHTML = `
@@ -294,14 +353,17 @@ class FilterBar extends HTMLElement {
 
     template() {
         return `            
-            <div class="px-1 py-1 relative flex pt-10 pb-5">
-                <div class="relative block box-border w-7/8 pr-2">
-                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                        <span class="material-symbols-rounded text-5xl!">search</span>
+            <div class="px-1 py-1 relative flex flex-col gap-2 pt-10 pb-5">
+                <div class="flex gap-2">
+                    <div class="relative block box-border w-7/8">
+                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                            <span class="material-symbols-rounded text-5xl!">search</span>
+                        </div>
+                        <input type="search" class="search h-full w-full p-3 ps-15 bg-light-purple/50 rounded-full text-2xl focus:outline-none text-orange-400 placeholder:text-orange-400 [&::-webkit-search-cancel-button]:appearance-none" placeholder="Discover events"/>
                     </div>
-                    <input type="search" class="search h-full w-full p-3 ps-15 bg-light-purple/50 rounded-full text-2xl focus:outline-none text-orange-400 placeholder:text-orange-400 [&::-webkit-search-cancel-button]:appearance-none" placeholder="Discover events"/>
+                    <button id="open-filter-modal" class="aspect-square p-2 bg-light-purple/50 rounded-full flex justify-center items-center"><span class="material-symbols-rounded font-bold! text-5xl!">filter_list</span></button>
                 </div>
-                <button id="open-filter-modal" class="aspect-square p-2 bg-light-purple/50 rounded-full flex justify-center items-center"><span class="material-symbols-rounded font-bold! text-5xl!">filter_list</span></button>
+                <div id="quick-tags-filter" class="tag-list flex items-center gap-1.5 flex-wrap"></div>                       
             </div>
             <div id="modal-container" class="hidden">
                 <div id="tag-filter-modal" class="absolute left-0 top-0 w-screen text-purple-950 h-screen bg-black/50 z-50 sm:flex sm:justify-center pt-30 sm:pb-5">
