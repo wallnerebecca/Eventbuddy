@@ -362,8 +362,8 @@ class DetailedEventView extends HTMLElement {
     template() {
         if (this.#activeEvent) {
             return `
-                <div class="sm:hidden box-border w-full flex justify-start pt-10 pb-4 h-1/8">
-                    <div class="aspect-square bg-light-purple/50 rounded-full flex items-center justify-center"><span id="clear-active-event" class="material-symbols-rounded font-bold! text-5xl!">arrow_back</span></div>
+                <div class="sm:hidden box-border w-full flex justify-start items-center h-1/8">
+                    <button id="clear-active-event" class="aspect-square p-2 bg-light-purple/50 rounded-full flex justify-center items-center"><span class="material-symbols-rounded font-bold! text-5xl!">arrow_back</span></button>
                 </div>
                 <div class="box-border grid grid-cols-1 grid-rows-[auto_1fr_auto] w-full py-4 sm:py-2 h-7/8 sm:h-full rounded-4xl bg-light-purple p-2">
                     <div class="w-full row-start-1">

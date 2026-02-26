@@ -111,7 +111,7 @@ class EventBuddyView extends HTMLElement {
         return `
             <user-view class="hidden"></user-view>
             
-            <div class="px-2 w-full h-screen grid grid-cols-1 grid-rows-[auto_1fr_3.75rem] sm:grid-cols-2 md:grid-cols-[384px_1fr]">
+            <div class="px-2 w-full h-screen grid grid-cols-1 grid-rows-[auto_1fr_3.75rem] gap-x-0.5 sm:grid-cols-2 md:grid-cols-[384px_1fr]">
                 <filter-bar class="sm:block w-full row-start-1 row-span-1"></filter-bar>
                 
                 <event-list class="sm:block w-full h-full overflow-y-auto row-start-2 row-span-1 sm:row-span-2"></event-list>
