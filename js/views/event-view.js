@@ -48,28 +48,42 @@ class EventListItem extends HTMLElement {
 
     template() {
         return `
-            <div class="mb-1 grid grid-cols-20 grid-rows-3 bg-light-purple rounded-2xl p-1">
-                <div class="aspect-square row-start-1 col-start-1 col-span-3 row-span-3 bg-purple-950 rounded-xl text-orange-400 font-bold justify-center items-center">
-                    <div class="flex flex-col items-center justify-center">
-                        <span class="text-2xl font-sigmar-one">${this.#event.datetime.toLocaleString(getLang(), { month: "short"}).toUpperCase()}</span>
-                        <span class="text-4xl leading-none font-sigmar-one">${this.#event.datetime.toLocaleString(getLang(), { day: "numeric" })}</span> 
-                    </div>
+            <div class="mb-1 flex bg-light-purple rounded-2xl p-1">           
+              
+              <div class="w-20 h-20 bg-purple-950 rounded-xl text-orange-400 font-bold flex items-center justify-center shrink-0">
+                <div class="flex flex-col items-center justify-center">
+                  <span class="text-2xl font-sigmar-one">
+                    ${this.#event.datetime.toLocaleString(getLang(), { month: "short"}).toUpperCase()}
+                  </span>
+                  <span class="text-4xl leading-none font-sigmar-one">
+                    ${this.#event.datetime.toLocaleString(getLang(), { day: "numeric" })}
+                  </span>
                 </div>
-                
-                <div class="pl-1 font-sigmar-one col-start-4 col-span-17 row-start-1 text-2xl text-purple-950">
+              </div>
+            
+              <div class="flex flex-col justify-between pl-2 flex-1">
+            
+                <div class="font-sigmar-one text-2xl text-purple-950">
                   ${this.#event.title}
                 </div>
             
-                <div class="pl-1 font-open-sans col-start-4 col-span-17 row-start-2 text-white text-xl">
-                  <span><span class="material-symbols-rounded">location_on</span>${this.#event.location}</span>
-                  <span class="px-2"/>
-                  <span><span class="material-symbols-rounded">schedule</span> ${this.#event.datetime.toLocaleTimeString(getLang(), {timeStyle: "short"})}</span>
+                <div class="font-open-sans text-white text-xl flex items-center gap-2">
+                  <span class="flex items-center gap-1">
+                    <span class="material-symbols-rounded">location_on</span>
+                    ${this.#event.location}
+                  </span>
+            
+                  <span class="flex items-center gap-1">
+                    <span class="material-symbols-rounded">schedule</span>
+                    ${this.#event.datetime.toLocaleTimeString(getLang(), {timeStyle: "short"})}
+                  </span>
                 </div>
             
-                <div class="pl-1 font-open-sans col-start-4 col-span-17 row-start-3 text-white">
-                  <div class="participants flex">
-                  </div>
+                <div class="font-open-sans text-white">
+                  <div class="participants flex"></div>
                 </div>
+            
+              </div>
             </div>
         `
     }
@@ -79,26 +93,14 @@ customElements.define("event-list-item", EventListItem);
 class EventList extends HTMLElement {
 
     #events
-    #availableTags
-    #availableParticipants
 
     constructor() {
         super();
         this.#events = [];
-        this.#availableTags = []
-        this.#availableParticipants = []
         model.addEventListener("event-list-changed", (event) => {
             this.#events = event.detail.events;
             this.render();
         });
-        model.addEventListener("tag-list-changed", (event) => {
-            this.#availableTags = event.detail.tags
-            this.render();
-        })
-        model.addEventListener("participants-changed", (event) => {
-            this.#availableParticipants = event.detail.participants
-            this.render();
-        })
     }
 
     connectedCallback() {
@@ -110,7 +112,6 @@ class EventList extends HTMLElement {
         this.appendChild(this.header().content); // no need to clone, only used once
 
         const list = this.querySelector("div.event-list");
-        const list2 = this.querySelector("div.event-list2");
         this.#events.map(event => {
             const eventListItem = new EventListItem(event);
             eventListItem.addEventListener("click", (e) => {

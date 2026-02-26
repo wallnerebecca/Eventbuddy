@@ -467,7 +467,7 @@ class DetailedEventView extends HTMLElement {
                            
                     <div class="w-full row-start-3 py-2 flex justify-between">
                         <div class="flex gap-2">
-                            <div id="back-to-event-info" class="invisible h-12 w-12 p-2 rounded-full text-orange-400 bg-purple-950"><span class="material-symbols-rounded text-3xl! font-bold!">arrow_back</span></div>
+                            <button id="back-to-event-info" class="invisible h-12 w-12 p-2 rounded-full text-orange-400 bg-purple-950"><span class="material-symbols-rounded text-3xl! font-bold!">arrow_back</span></button>
                             <button id="delete-event" class="invisible h-12 p-2 rounded-full text-orange-400 bg-purple-950"><span class="material-symbols-rounded text-3xl! font-bold!">delete</span></button>
                         </div>
                                 

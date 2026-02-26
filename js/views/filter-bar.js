@@ -301,12 +301,12 @@ class FilterBar extends HTMLElement {
                     </div>
                     <input type="search" class="search h-full w-full p-3 ps-15 bg-light-purple/50 rounded-full text-2xl focus:outline-none text-orange-400 placeholder:text-orange-400 [&::-webkit-search-cancel-button]:appearance-none" placeholder="Discover events"/>
                 </div>
-                <div id="open-filter-modal" class="box-border max-w-1/4 w-1/8 text-2xl flex justify-center items-center"><span class="material-symbols-rounded aspect-square bg-light-purple/50 rounded-full font-bold! text-5xl!">filter_list</span></div>
+                <button id="open-filter-modal" class="aspect-square p-2 bg-light-purple/50 rounded-full flex justify-center items-center"><span class="material-symbols-rounded font-bold! text-5xl!">filter_list</span></button>
             </div>
             <div id="modal-container" class="hidden">
-                <div id="tag-filter-modal" class="absolute left-0 top-0 w-screen text-purple-950 h-screen bg-black/50 z-50 sm:flex sm:justify-center pt-30 sm:pb-20">
+                <div id="tag-filter-modal" class="absolute left-0 top-0 w-screen text-purple-950 h-screen bg-black/50 z-50 sm:flex sm:justify-center pt-30 sm:pb-5">
                     <div class="rounded-t-4xl max-w-xl w-full h-full bg-[#FFD6A7] sm:rounded-b-4xl p-8 flex flex-col items-center">
-                        <hr class="w-6/10 h-1 mb-2 bg-purple-950">
+                        <div class="w-2/10 h-1  bg-purple-950 rounded-full"></div>
                         <span class="text-5xl font-sigmar-one pb-8">Filters</span>
                         
                         <div class="pb-8 w-7/8">
